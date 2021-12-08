@@ -11,8 +11,9 @@
 
 # a bit more that the peginnink
 1 login werkend maken
-2 maak profile werkend
+2 maak profile werkend (gewoon de paramers die niet te maken m=hebben met searchrank weghalen.)
 3 bezig met de selenium crawler
 4 bezig met de graph overview
 5 naam van page veranderen
 6 verzin een grof logo
+7 pas navigatie aan in app.py
