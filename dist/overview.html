@@ -1,0 +1,22 @@
+{% from "macros.html" import build_pagination, build_add_button, build_table, build_card_header %}
+
+{% extends "base.html" %}
+{% block content %}
+<section class="section is-main-section">
+  <div class="card has-table">
+    {{ build_card_header('Trades', 'mdi-twitter-retweet') }}
+    <div class="card-content">
+      <div class="b-table has-pagination">
+        <div class="table-wrapper has-mobile-cards">
+        {{ build_table(data.data, [], []) }}
+        </div>
+        <div class="notification">
+          {{ build_pagination("overviewtrades", data) }}
+          {{ build_add_button(data, 'add', 'overview') }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

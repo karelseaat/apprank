@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+sqlalchemy = "*"
+faker = "*"
+sqlalchemy-utils = "*"
+authlib = "*"
+flask-oauthlib = "*"
+oauthlib = "*"
+requests = "*"
+flask-authlib-client = "*"
+flask-login = "*"
+toml = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"

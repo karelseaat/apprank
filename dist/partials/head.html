@@ -1,0 +1,50 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ trans(data['pagename'], self) }}</title>
+  <link rel="shortcut icon" href="/assets/img/favicon.png" type="image/png">
+  <!-- Bulma is included -->
+  <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/custom.css">
+
+  <!-- Fonts -->
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
+  <script src="https://www.google.com/recaptcha/api.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-50HB808QSX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-50HB808QSX');
+</script>
+
+  <script>
+
+
+  function resetform() {
+    document.getElementById("demo-form").reset();
+  }
+
+  function onSubmit(token) {
+    document.getElementById("demo-form").submit();
+  }
+
+  function myFunction() { 
+    var x = document.getElementById("snackbar");
+    if(x.innerHTML.replace(/\s+/g, '').length > 0)
+    {
+      x.className = "show";  
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+    }
+
+  }
+</script>
+
+
+
+
+</head>

@@ -1,0 +1,492 @@
+{% macro build_badge(data, title, colorclass, iconclass) %}
+<div class="tile is-parent">
+  <div class="card tile is-child">
+    <div class="card-content">
+      <div class="level is-mobile">
+        <div class="level-item">
+          <div class="is-widget-label">
+            <h3 class="subtitle is-spaced">
+              {{ trans(title, self) }}
+            </h3>
+            <h1 class="title">
+              {{ data[-1] }}
+            </h1>
+          </div>
+        </div>
+        <div class="level-item has-widget-icon">
+          <div class="is-widget-icon"><span class="icon {{ colorclass }} is-large"><i class="mdi {{ iconclass }} mdi-48px"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro build_pagination(pagename, data) %}
+<div class="level">
+  <div class="level-left">
+    <div class="level-item">
+      <div class="buttons has-addons">
+        {% for page in data.total %}
+        {% if data.pagenum %}
+        <button type="button" class="button {{ 'is-active' if page == data.pagenum[0] }}" onclick="window.location.href='/{{ pagename }}?pagenum={{ page -1}}';">{{ page }}</button>
+        {% else %}
+        <button type="button" class="button {{ 'is-active' if page == 1 }}" onclick="window.location.href='/{{ pagename }}?pagenum={{ page -1}}';">{{ page }}</button>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="level-right">
+    <div class="level-item">
+      {% if data.pagenum[1] %}
+      <small>{{ trans("Page", self) }} {{ data.pagenum[0] }} {{ trans("of", self) }} {{ data.pagenum[1] }}</small>
+      {% else %}
+      <small>{{ trans("Page", self) }} 0 {{ trans("of", self) }} 0</small>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro build_add_button(data, navigate ,redirectto) %}
+{% if data.user.cancreate %}
+<button class="button is-medium is-primary" type="button" onclick="window.location.href='/{{ navigate }}?redirectto=/{{ redirectto }}'">
+  <span>{{ trans("Add", self) }}</span>
+  <span class="icon"><i class="mdi mdi-folder-plus"></i></span>
+</button>
+{% else %}
+<button class="button is-medium is-primary" disabled type="button">
+  <span>{{ trans("Add", self) }}</span>
+  <span class="icon"><i class="mdi mdi-folder-plus"></i></span>
+</button>
+{% endif %}
+{% endmacro %}
+
+{% macro build_review_table(data) %}
+<table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+  <thead>
+    <tr>
+      <th></th>
+      <th>{{ trans("User name", self) }}</th>
+      <th></th>
+      <th>{{ trans("App name", self) }}</th>
+      <th>{{ trans("Review rating", self) }}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for my_item in data %}
+    <tr>
+      {% if my_item.userimageurl %}
+      <td class="is-image-cell">
+        <div class="image">
+          <img src="{{ my_item.userimageurl }}" class="is-rounded" alt="{{ my_item.username }}">
+        </div>
+      </td>
+      {% else %}
+      <td class="is-image-cell">
+        <div class="image">
+          <img src="{{ my_item.user.picture }}" class="is-rounded" alt="{{ my_item.user.fullname }}">
+        </div>
+      </td>
+      {% endif %}
+
+      {% if my_item.username %}
+      <td>{{ my_item.username }}</td>
+      {% else %}
+      <td><a href="/usertrades/{{  my_item.user.id }}">{{ my_item.user.fullname }}</a></td>
+      {% endif %}
+
+      <td class="is-image-cell">
+        <div class="image">
+          <img src="{{ my_item.app.imageurl }}" class="is-rounded" alt="{{ my_item.app.name }}">
+        </div>
+      </td>
+      <td>{{ my_item.app.name }}</td>
+
+      <td title="{{ score }}">
+        {{ build_rating(my_item.reviewrating) }}
+      </td>
+      <td class="is-actions-cell">
+        <div class="buttons is-right">
+          <button class="button is-small is-primary" type="button" onclick="window.location.href='/showreview/{{ my_item.id }}';">
+            <span class="icon"><i class="mdi mdi-eye"></i></span>
+          </button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endmacro %}
+
+{% macro build_table(data, sorts, cursort) %}
+<table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+  <thead>
+    <tr>
+      <th></th>
+      <th>{{ trans("Start User", self) }}</th>
+      <th></th>
+      <th>{{ trans("Start App", self) }}</th>
+      <th>
+        <{{ trans("Status", self) }}
+      </th>
+      <th>{{ trans("Days left", self) }}</th>
+      <th>{{ trans("Created", self) }}</th>
+      <th>{{ trans("Accepted", self) }}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for my_item in data %}
+    <tr>
+      <td class="is-image-cell">
+        <div class="image">
+          <img src="{{ my_item.initiator.picture }}" class="is-rounded" alt="{{ my_item.initiator.fullname }}">
+        </div>
+      </td>
+      <td><a href="/usertrades/{{ my_item.initiator.id }}">{{ my_item.initiator.fullname }}</a></td>
+      <td class="is-image-cell">
+        <div class="image">
+          <img src="{{ my_item.initiatorapp.imageurl }}" class="is-rounded" alt="{{ my_item.initiatorapp.name }}">
+        </div>
+      </td>
+
+      <td><a href="{{ my_item.initiatorapp.get_url() }}">{{ my_item.initiatorapp.name }}</a></td>
+      <td>{{ my_item.status }}</td>
+      <td>{{ my_item.trade_days_left() }}</td>
+      <td>{{ my_item.initiated }}</td>
+      <td>{{ my_item.accepted }}</td>
+      <td class="is-actions-cell">
+        <div class="buttons is-right">
+          <button class="button is-small is-primary" type="button" onclick="window.location.href='/show/{{ my_item.id }}';">
+            <span class="icon"><i class="mdi mdi-eye"></i></span>
+          </button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endmacro %}
+
+{% macro build_rating(score) %}
+{% set newscore = (score)|int %}
+{% set restscore = (5-newscore)|int %}
+<span title="{{ score }}">
+  {% for n in range(newscore) %}
+  <span class="mdi mdi-star"></span>
+  {% endfor %}
+
+
+  {% for n in range(restscore) %}
+  <span class="mdi mdi mdi-star-outline"></span>
+  {% endfor %}
+</span>
+{% endmacro %}
+
+{% macro build_simple_app_table(data) %}
+<table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+  <thead>
+    <tr>
+      <th></th>
+      <th>
+      {{ trans("Name", self) }}
+      </th>
+      <th>{{ trans("Found Reviews", self) }}</th>
+      <th>{{ trans("Paid", self) }}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for my_item in data %}
+    <tr>
+      <td class="is-image-cell">
+        <div class="image">
+          <img src="{{ my_item.imageurl }}" class="is-rounded" alt="{{ my_item.name }}">
+        </div>
+      </td>
+      <td><a href="{{ my_item.get_url() }}">{{ my_item.name }}</a></td>
+      <td>
+        <p>{{my_item.reviews|count}}</p>
+      </td>
+      <td> {{ trans("Yes", self) if my_item.paid else trans("No", self) }} </td>
+      <td class="is-actions-cell">
+        <div class="buttons is-right">
+          <button class="button is-small is-primary" type="button" onclick="window.location.href='/showapp/{{ my_item.id }}';">
+            <span class="icon"><i class="mdi mdi-eye"></i></span>
+          </button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endmacro %}
+
+{% macro build_app_table(data, sorts, cursort) %}
+<table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+  <thead>
+    <tr>
+      <th></th>
+      <th>
+        <div class="th-wrap">
+
+          <span class="is-relative"> {{ trans("Name", self) }}
+            {% if cursort.name == 'asc' %}
+            <a class="icon sort-icon is-small" href="{{ url_for(request.endpoint) }}?name={{ sorts.name }}&payed={{ cursort.payed }}"><i class="mdi mdi-arrow-up"></i></a>
+            {% elif cursort.name == 'desc' %}
+            <a class="icon sort-icon is-small" href="{{ url_for(request.endpoint) }}?name={{ sorts.name }}&payed={{ cursort.payed }}"><i class="mdi mdi-arrow-down"></i></a>
+            {% else %}
+            <a class="icon sort-icon is-small" href="{{ url_for(request.endpoint) }}?name={{ sorts.name }}&payed={{ cursort.payed }}"><i class="mdi mdi-checkbox-blank-circle"></i></a>
+            {% endif %}
+          </span>
+        </div>
+      </th>
+      <th>{{ trans("Found Reviews", self) }}</th>
+      <th><span class="is-relative"> {{ trans("Paid", self) }}
+        {% if cursort.payed == 'asc' %}
+        <a class="icon sort-icon is-small" href="{{ url_for(request.endpoint) }}?payed={{ sorts.payed }}&name={{ cursort.name }}"><i class="mdi mdi-arrow-up"></i></a>
+        {% elif cursort.payed == 'desc' %}
+        <a class="icon sort-icon is-small" href="{{ url_for(request.endpoint) }}?payed={{ sorts.payed }}&name={{ cursort.name }}"><i class="mdi mdi-arrow-down"></i></a>
+        {% else %}
+        <a class="icon sort-icon is-small" href="{{ url_for(request.endpoint) }}?payed={{ sorts.payed }}&name={{ cursort.name }}"><i class="mdi mdi-checkbox-blank-circle"></i></a>
+        {% endif %}
+      </span></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for my_item in data %}
+    <tr>
+      <td class="is-image-cell">
+        <div class="image">
+          <img src="{{ my_item.imageurl }}" class="is-rounded" alt="{{ my_item.name }}">
+        </div>
+      </td>
+      <td><a href="{{ my_item.get_url() }}">{{ my_item.name }}</a></td>
+      <td>
+        <p>{{my_item.reviews|count}}</p>
+      </td>
+      <td> {{ trans("Yes", self) if my_item.paid else trans("No", self) }} </td>
+      <td class="is-actions-cell">
+        <div class="buttons is-right">
+          <button class="button is-small is-primary" type="button" onclick="window.location.href='/showapp/{{ my_item.id }}';">
+            <span class="icon"><i class="mdi mdi-eye"></i></span>
+          </button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endmacro %}
+
+{% macro build_user_profile_basic(data) %}
+<div class="card tile is-child">
+
+  {{ build_card_header("Profile", "mdi-account") }}
+  <div class="card-content">
+    <div class="is-user-avatar image has-max-width is-aligned-center">
+      <img src="{{ data.data.picture }}" alt="{{ data.data.fullname }}">
+    </div>
+    {{ build_defautl_field("Name", data.data.fullname) }}
+    {{ build_defautl_field("E-mail", data.data.email) }}
+    {{ build_defautl_field("Locale", data.data.locale) }}
+    <hr>
+    {{ build_defautl_field("Started trades", data.data.initiatortrades|length) }}
+    <hr>
+    {{ build_defautl_field("Joined trades", data.data.joinertrades|length) }}
+    <hr>
+    {{ build_defautl_field("Failed trades", data.data.all_trade_fails()|length) }}
+    <hr>
+    {{ build_defautl_field("Successful trades", data.data.all_trade_successes()|length) }}
+    <hr>
+
+
+    {{ build_review_score("Trade score", data.data.get_score()) }}
+
+    <hr>
+    {{ build_defautl_field("Pending trades", data.data.all_pending()|length) }}
+    <hr>
+  </div>
+</div>
+{% endmacro %}
+
+
+{% macro build_form_submit(recapcha) %}
+<div class="field is-horizontal">
+  <div class="field-label">
+    <!-- Left empty for spacing -->
+  </div>
+  <div class="field-body">
+    <div class="field">
+      <div class="field is-grouped">
+        <div class="control">
+          <button class="g-recaptcha button is-primary" data-sitekey="{{ recapcha }}" data-callback='onSubmit' data-action='submit'>
+            {{ trans("Submit", self) }}
+          </button>
+        </div>
+        <div class="control">
+          <button type="button" class="button is-primary is-outlined" onclick="resetform()">
+            <span>{{ trans("Reset", self) }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro build_card_header(title, icon) %}
+<header class="card-header">
+  <p class="card-header-title">
+    <span class="icon"><i class="mdi {{ icon }}"></i></span>
+    {{ title }}
+  </p>
+</header>
+{% endmacro %}
+
+{% macro build_store_graph(data) %}
+<div class="card">
+  {{ build_card_header("Klont", 'mdi-finance') }}
+  <div class="card-content">
+    <div class="chart-area">
+      <div style="height: 100%;">
+        <div class="chartjs-size-monitor">
+          <div class="chartjs-size-monitor-expand">
+            <div></div>
+          </div>
+          <div class="chartjs-size-monitor-shrink">
+            <div></div>
+          </div>
+        </div>
+        <canvas id="big-line-chart" width="2992" height="1000" class="chartjs-render-monitor" style="display: block; height: 400px; width: 1197px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="is-hidden" id="apps">
+  [
+  {% for key, my_item in data.data.items()%}
+  {
+    "fill": false,
+    "borderWidth": 2,
+    "borderColor": "{{ my_item[0] }}",
+    "pointBackgroundColor": "{{ my_item[0] }}",
+    "pointBorderColor": "{{ my_item[0] }}",
+    "borderDash": [],
+    "borderDashOffset": 0.0,
+    "label": "{{ key }}",
+    "data": {{ my_item[1] }},
+    "pointBorderWidth": 1,
+    "pointHoverRadius": 7,
+    "pointHoverBorderWidth": 2,
+    "pointRadius": 7
+  }
+    {% if not loop.last %}
+    ,
+    {% endif %}
+  {% endfor %}
+  ]
+</div>
+{% endmacro %}
+
+{% macro build_graph(data) %}
+<div class="card">
+  {{ build_card_header('  Usage stats', 'mdi-finance') }}
+  <div class="card-content">
+    <div class="chart-area">
+      <div style="height: 100%;">
+        <div class="chartjs-size-monitor">
+          <div class="chartjs-size-monitor-expand">
+            <div></div>
+          </div>
+          <div class="chartjs-size-monitor-shrink">
+            <div></div>
+          </div>
+        </div>
+        <canvas id="big-line-chart" width="2992" height="1000" class="chartjs-render-monitor" style="display: block; height: 400px; width: 1197px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="is-hidden" id="apps-num-data">{{ data.apps }}</div>
+<div class="is-hidden" id="trades-num-data">{{ data.trades }}</div>
+<div class="is-hidden" id="reviews-num-data">{{ data.reviews }}</div>
+<div class="is-hidden" id="labels-num-data">{{ data.labels }}</div>
+{% endmacro %}
+
+{% macro build_app_add_join(current_user) %}
+<div class="field is-horizontal">
+  <div class="field-label is-normal">
+    <label class="label">{{ trans("The app id you want reviewed", self) }}</label>
+  </div>
+  <div class="field-body">
+    <div class="field">
+      <div class="control">
+        {% if current_user.get_score() < 0 %}
+        <input class="input" type="text" name="appid" placeholder="{{ trans('Enter your app id', self) }}" disabled>
+        {% else %}
+        <input class="input" type="text" name="appid" placeholder="{{ trans('Enter your app id', self) }}">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro build_href_field(label, content, href) %}
+<div class="field">
+  <label class="label">{{ trans(label, self) }}</label>
+  <div class="control is-clearfix">
+    <a href="{{ href }}">
+      <p>{{ content }}</p>
+    </a>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro build_icon_field(label, name, imageurl, link=None) %}
+<label class="label">{{ trans(label, self) }}:</label>
+<div class="control is-clearfix">
+  <div class="is-user-avatar image has-max-width is-aligned-center">
+    <img src="{{ imageurl }}" alt="{{ name }}">
+
+  </div>
+  {% if link %}
+  <span class="centerit"><a href="{{ link }}">{{ name }}</a></span>
+  {% else %}
+  <span class="centerit">{{ name }}</span>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro build_defautl_field(label, content) %}
+<div class="field">
+  <label class="label">{{ trans(label, self) }}:</label>
+  <div class="control is-clearfix">
+    <p>{{ content }}</p>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro build_review_score(label, score) %}
+<label class="label">{{ trans(label, self) }}:</label>
+<div class="control is-clearfix">
+  {% if score > 0 %}
+  <p class="label has-text-primary"> {{ score }} </p>
+  {% elif score == 0 %}
+  <p class="label has-text-warning"> {{ score }} </p>
+  {% else %}
+  <p class="label has-text-danger"> {{ score }} </p>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro build_menu_li(name, href, icon, active) %}
+<li>
+  <a href="{{ href }}" class="{{'is-active' if active}}  has-icon">
+    <span class="icon"><i class="mdi {{ icon }} mdi-24px"></i></span>
+    <span class="menu-item-label">{{ trans(name, self) }}</span>
+  </a>
+</li>
+{% endmacro %}

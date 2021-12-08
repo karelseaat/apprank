@@ -1,0 +1,14 @@
+{% from "macros.html" import build_user_profile_basic %}
+
+{% extends "base.html" %}
+{% block content %}
+
+<section class="section is-main-section">
+  <div class="tile is-ancestor">
+    <div class="tile is-parent">
+      {{ build_user_profile_basic(data) }}
+    </div>
+  </div>
+</section>
+
+{% endblock %}
