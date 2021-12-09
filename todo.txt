@@ -10,10 +10,14 @@
 5 create searchrank domain (done)
 
 # a bit more that the peginnink
-1 login werkend maken
-2 maak profile werkend (gewoon de paramers die niet te maken m=hebben met searchrank weghalen.)
+1 login werkend maken (done)
+2 maak profile werkend (gewoon de paramers die niet te maken m=hebben met searchrank weghalen.) (done)
+3 pas navigatie aan in app.py (done)
+4 naam van page veranderen (done)
+5 verzin een grof logo (done)
+
+# klonter, of bestond die al in tree a rate
+1 zoek veld in de rank app maken !
+2 rank app page afmaken
 3 bezig met de selenium crawler
-4 bezig met de graph overview
-5 naam van page veranderen
-6 verzin een grof logo
-7 pas navigatie aan in app.py
+4 bezig met de graph overview (kut werk) (iets met labels die er niet zijn !)

@@ -21,12 +21,11 @@ var chartColors = {
 // console.log(document.getElementById('apps').innerHTML)
 
 var ctx = document.getElementById('big-line-chart').getContext('2d');
-new Chart(ctx, {
+var newchart = new Chart(ctx, {
   type: 'line',
   data: {
-    // labels: ['aap', 'noot', 'mies'],
-    // datasets: [],
-    datasets: JSON.parse(document.getElementById('apps').innerHTML)
+    datasets: JSON.parse(document.getElementById('apps').innerHTML),
+    labels: JSON.parse(document.getElementById('labels').innerHTML)
   },
   options: {
     maintainAspectRatio: false,

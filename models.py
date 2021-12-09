@@ -41,7 +41,12 @@ class User(DictSerializableMixin):
     email = Column(String(256))
     locale = Column(String(3))
     googleid = Column(String(256), nullable=False)
-    # searchkeys = relationship('Searchkey', back_populates="user")
+
+    searchkeys = relationship(
+        "Searchkey",
+        secondary=user_search_association,
+        back_populates="users"
+    )
 
     def __init__(self, googleid):
         self.googleid = googleid
@@ -95,8 +100,6 @@ class Searchkey(DictSerializableMixin):
     __tablename__ = 'searchkey'
     id = Column(Integer, primary_key=True)
     searchsentence = Column(String(256), nullable=False)
-    # user_id = Column(ForeignKey('users.id'), index=True)
-    # user = relationship('User', back_populates="searchkeys")
     rankapps = relationship(
         "Rankapp",
         secondary=search_app_association,

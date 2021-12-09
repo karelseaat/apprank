@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7776a7fcdc167f1a432e618d23a59a30d4a9b9b576dffba60f1933de57ace7b4"
+            "sha256": "17a19ba981eafd35ea266b131e996e56891f1b07029dcb8fbf59b4cdfa430d16"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -110,6 +110,14 @@
             "markers": "python_version >= '3.6'",
             "version": "==8.0.3"
         },
+        "colour": {
+            "hashes": [
+                "sha256:33f6db9d564fadc16e59921a56999b79571160ce09916303d35346dddc17978c",
+                "sha256:af20120fefd2afede8b001fbef2ea9da70ad7d49fafdb6489025dae8745c3aee"
+            ],
+            "index": "pypi",
+            "version": "==0.1.5"
+        },
         "cryptography": {
             "hashes": [
                 "sha256:2049f8b87f449fc6190350de443ee0c1dd631f2ce4fa99efad2984de81031681",
@@ -160,6 +168,14 @@
             ],
             "index": "pypi",
             "version": "==0.0.1"
+        },
+        "flask-cachecontrol": {
+            "hashes": [
+                "sha256:02bfff1710d93b235ae4e875979d48d67a2e1f6c8881f1e1c0fd1e1df300bfcb",
+                "sha256:eef84a00499c6e27c8e5bcb0883c48d02d489fe449bd9e5522a17f2f55c08d74"
+            ],
+            "index": "pypi",
+            "version": "==0.2.1"
         },
         "flask-login": {
             "hashes": [

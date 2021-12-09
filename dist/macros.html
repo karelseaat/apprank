@@ -291,21 +291,7 @@
     {{ build_defautl_field("Name", data.data.fullname) }}
     {{ build_defautl_field("E-mail", data.data.email) }}
     {{ build_defautl_field("Locale", data.data.locale) }}
-    <hr>
-    {{ build_defautl_field("Started trades", data.data.initiatortrades|length) }}
-    <hr>
-    {{ build_defautl_field("Joined trades", data.data.joinertrades|length) }}
-    <hr>
-    {{ build_defautl_field("Failed trades", data.data.all_trade_fails()|length) }}
-    <hr>
-    {{ build_defautl_field("Successful trades", data.data.all_trade_successes()|length) }}
-    <hr>
 
-
-    {{ build_review_score("Trade score", data.data.get_score()) }}
-
-    <hr>
-    {{ build_defautl_field("Pending trades", data.data.all_pending()|length) }}
     <hr>
   </div>
 </div>
@@ -364,19 +350,26 @@
     </div>
   </div>
 </div>
+<div class="is-hidden" id="labels">
+[{% for label in data.labels %}
+"{{ label }}"
+{% if not loop.last %},{% endif %}
+{% endfor %}]
+</div>
 <div class="is-hidden" id="apps">
+
   [
-  {% for key, my_item in data.data.items()%}
+  {% for my_item in data.data %}
   {
     "fill": false,
     "borderWidth": 2,
-    "borderColor": "{{ my_item[0] }}",
-    "pointBackgroundColor": "{{ my_item[0] }}",
-    "pointBorderColor": "{{ my_item[0] }}",
+    "borderColor": "{{ my_item.color }}",
+    "pointBackgroundColor": "{{ my_item.color }}",
+    "pointBorderColor": "{{ my_item.color }}",
     "borderDash": [],
     "borderDashOffset": 0.0,
-    "label": "{{ key }}",
-    "data": {{ my_item[1] }},
+    "label": "{{ my_item.name }}",
+    "data": {{ my_item.data }},
     "pointBorderWidth": 1,
     "pointHoverRadius": 7,
     "pointHoverBorderWidth": 2,
@@ -469,18 +462,6 @@
 </div>
 {% endmacro %}
 
-{% macro build_review_score(label, score) %}
-<label class="label">{{ trans(label, self) }}:</label>
-<div class="control is-clearfix">
-  {% if score > 0 %}
-  <p class="label has-text-primary"> {{ score }} </p>
-  {% elif score == 0 %}
-  <p class="label has-text-warning"> {{ score }} </p>
-  {% else %}
-  <p class="label has-text-danger"> {{ score }} </p>
-  {% endif %}
-</div>
-{% endmacro %}
 
 {% macro build_menu_li(name, href, icon, active) %}
 <li>
