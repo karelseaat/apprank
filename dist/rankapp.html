@@ -4,9 +4,28 @@
 {% block content %}
 
 <section class="section is-main-section">
-
-  {{ build_store_graph(data) }}
-
+  <div class="card">
+    <div class="card-content">
+      <p>bleh</p>
+    </div>
+  </div>
 </section>
+
+{% if not data.data %}
+<section class="section">
+  <div class="card">
+    <div class="card-content">
+      <p>The searchkey for "{{ data.searchkey }}" is not found, come back in a week and we will have history data for this search key. </p>
+    </div>
+  </div>
+</section>
+
+{% else %}
+
+<section class="section">
+  {{ build_store_graph(data) }}
+</section>
+
+{% endif %}
 
 {% endblock %}

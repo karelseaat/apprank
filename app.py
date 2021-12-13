@@ -321,11 +321,14 @@ def rankapp(searchkey):
 
     searchkey = searchkey.strip().lower()
 
-    results = app.session.query(Rankapp.name, func.group_concat(Rankapp.rank, '-'), func.group_concat(Rankapp.ranktime, ',')).join((Searchkey, Rankapp.searchkeys)).filter(Searchkey.searchsentence == searchkey).group_by(Rankapp.name).order_by(desc(Rankapp.ranktime))
-    labels = [x[2].split(",") for x in results]
-    labels = set(sum(labels, []))
-    results = [ {'color':convertToColor(x[0]), 'data':[int(x) for x in x[1].split("-")], 'name':x[0]} for x in results]
+    results = app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).filter(Searchkey.searchsentence == searchkey)
+    # labels = [x[2].split(",") for x in results]
+    # labels = set(sum(labels, []))
+    # results = [ {'color':convertToColor(x[0]), 'data':[int(x) for x in x[1].split("-")], 'name':x[0]} for x in results]
+    print(results.all())
+    return "kud !"
 
+    app.data['searchkey'] = searchkey
     app.data['labels'] = labels
     if not results:
         search = Searchkey()
@@ -333,6 +336,7 @@ def rankapp(searchkey):
         search.user = current_user
         app.session.add(search)
         app.session.commit()
+        app.data['data'] = []
     else:
         app.data['data'] = results
     result = render_template('rankapp.html', data=app.data)

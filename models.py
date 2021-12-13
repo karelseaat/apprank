@@ -72,20 +72,32 @@ search_app_association = Table('searchapp', Base.metadata,
     Column('searchkey_id', ForeignKey('searchkey.id'), primary_key=True)
 )
 
+class SearchRank(DictSerializableMixin):
+    __tablename__ = 'searchrank'
+    id = Column(Integer, primary_key=True)
+    rankapp = relationship("Rankapp", back_populates="searchranks")
+    rankapp_id = Column(ForeignKey('rankingapp.id'), index=True)
+    rank = Column(Integer)
+    ranktime = Column(Date, default=datetime.datetime.utcnow)
+
 class Rankapp(DictSerializableMixin):
     __tablename__ = 'rankingapp'
     id = Column(Integer, primary_key=True)
     name = Column(String(64), nullable=False)
     appidstring = Column(String(64), nullable=False)
-    continuation_token = Column(String(512))
     imageurl = Column(String(256))
-    rank = Column(Integer)
-    ranktime = Column(Date, default=datetime.datetime.utcnow)
+
+
     paid = Column(Boolean, default=False)
     searchkeys = relationship(
         "Searchkey",
         secondary=search_app_association,
         back_populates="rankapps"
+    )
+
+    searchranks = relationship(
+        "SearchRank",
+        back_populates="rankapp"
     )
 
     def __init__(self, name, idstring):

@@ -22,13 +22,19 @@ if CONNECTIONURI and 'sqlite:///' in CONNECTIONURI:
 
 session = make_session()
 
+# def random_user(user):
+#     faker = Faker()
+#     initiateduser = user(faker.random_int(0, 100000))
+#     initiateduser.fullname = faker.name()
+#     initiateduser.picture = faker.name()
+#     return initiateduser
 
-def random_user(user):
+def random_searchrank(searchrank):
     faker = Faker()
-    initiateduser = user(faker.random_int(0, 100000))
-    initiateduser.fullname = faker.name()
-    initiateduser.picture = faker.name()
-    return initiateduser
+
+    searchrank.ranktime = faker.date_between(start_date='-1y', end_date='today')
+    searchrank.rank = faker.random_int(1, 600)
+    return searchrank
 
 def random_searchkeys(searchkey):
     faker = Faker()
@@ -38,10 +44,10 @@ def random_searchkeys(searchkey):
         appidstring = faker.name()
         for _ in range(10):
             rankapp = Rankapp(name, appidstring)
-            # rankapp.name = name
-            # rankapp.appidstring = appidstring
-            rankapp.ranktime = faker.date_between(start_date='-1y', end_date='today')
-            rankapp.rank = faker.random_int(1, 600)
+
+            for _ in range(5):
+                rankapp.searchranks.append(random_searchrank(SearchRank()))
+
             searchkey.rankapps.append(rankapp)
     return searchkey
 
