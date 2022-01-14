@@ -51,17 +51,12 @@
 {% endmacro %}
 
 {% macro build_add_button(data, navigate ,redirectto) %}
-{% if data.user.cancreate %}
+
 <button class="button is-medium is-primary" type="button" onclick="window.location.href='/{{ navigate }}?redirectto=/{{ redirectto }}'">
   <span>{{ trans("Add", self) }}</span>
   <span class="icon"><i class="mdi mdi-folder-plus"></i></span>
 </button>
-{% else %}
-<button class="button is-medium is-primary" disabled type="button">
-  <span>{{ trans("Add", self) }}</span>
-  <span class="icon"><i class="mdi mdi-folder-plus"></i></span>
-</button>
-{% endif %}
+
 {% endmacro %}
 
 {% macro build_review_table(data) %}
@@ -125,43 +120,28 @@
 <table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
   <thead>
     <tr>
-      <th></th>
-      <th>{{ trans("Start User", self) }}</th>
-      <th></th>
-      <th>{{ trans("Start App", self) }}</th>
+      <th>{{ trans("Keyword", self) }}</th>
+
+      <th>{{ trans("First search", self) }}</th>
       <th>
         <{{ trans("Status", self) }}
       </th>
-      <th>{{ trans("Days left", self) }}</th>
-      <th>{{ trans("Created", self) }}</th>
-      <th>{{ trans("Accepted", self) }}</th>
+      <th>{{ trans("User", self) }}</th>
+      <th>{{ trans("Use imager", self) }}</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
     {% for my_item in data %}
     <tr>
-      <td class="is-image-cell">
-        <div class="image">
-          <img src="{{ my_item.initiator.picture }}" class="is-rounded" alt="{{ my_item.initiator.fullname }}">
-        </div>
-      </td>
-      <td><a href="/usertrades/{{ my_item.initiator.id }}">{{ my_item.initiator.fullname }}</a></td>
-      <td class="is-image-cell">
-        <div class="image">
-          <img src="{{ my_item.initiatorapp.imageurl }}" class="is-rounded" alt="{{ my_item.initiatorapp.name }}">
-        </div>
-      </td>
 
-      <td><a href="{{ my_item.initiatorapp.get_url() }}">{{ my_item.initiatorapp.name }}</a></td>
-      <td>{{ my_item.status }}</td>
-      <td>{{ my_item.trade_days_left() }}</td>
-      <td>{{ my_item.initiated }}</td>
-      <td>{{ my_item.accepted }}</td>
+      <td>{{ my_item.searchsentence }}</td>
+      <td>{{ my_item.searchsentence }}</td>
+      <td>{{ my_item.searchsentence }}</td>
       <td class="is-actions-cell">
         <div class="buttons is-right">
           <button class="button is-small is-primary" type="button" onclick="window.location.href='/show/{{ my_item.id }}';">
-            <span class="icon"><i class="mdi mdi-eye"></i></span>
+            <span class="icon"><i class="mdi mdi-magnify"></i></span>
           </button>
       </td>
     </tr>
@@ -368,8 +348,8 @@
     "pointBorderColor": "{{ my_item.color }}",
     "borderDash": [],
     "borderDashOffset": 0.0,
-    "label": "{{ my_item.name }}",
-    "data": {{ my_item.data }},
+    "label": "{{ my_item['name'] }}",
+    "data": {{ my_item['stuff'] }},
     "pointBorderWidth": 1,
     "pointHoverRadius": 7,
     "pointHoverBorderWidth": 2,

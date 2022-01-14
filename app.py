@@ -13,6 +13,8 @@ from flask import (
     session as browsersession
 )
 
+import pprint
+
 from authlib.integrations.flask_client import OAuth
 
 from flask_login import (
@@ -23,8 +25,6 @@ from flask_login import (
     LoginManager
 )
 
-# from flask_mail import Mail, Message
-# from cerberus import Validator
 
 from flask_cachecontrol import (FlaskCacheControl, cache_for, dont_cache)
 from config import (
@@ -80,26 +80,13 @@ def local_breakdown(local):
     return boff.lower()
 
 def convertToColor(s):
-    # https://pypi.org/project/colour/
     value = str(s.encode().hex()[-6:])
     klont = Color(f"#{value}")
     klont.saturation = 0.6
 
     return klont.hex
 
-# def is_human(captcha_response):
-#     """ Validating recaptcha response from google server
-#         Returns True captcha test passed for submitted form else returns False.
-#     """
-#     payload = {'response':captcha_response, 'secret':recaptchasecret}
-#     response = requests.post("https://www.google.com/recaptcha/api/siteverify", payload)
-#     response_text = json.loads(response.text)
-#     return response_text['success']
-#
-# def round_up(num):
-#     """does rounding up without importing the math module"""
-#     return int(-(-num // 1))
-#
+
 def pagination(db_object, itemnum):
     """it does the pagination for db results"""
     pagenum = 0
@@ -134,23 +121,7 @@ def nongetpagination(db_object, itemnum):
 def load_user(userid):
     """we need this for authentication"""
     return app.session.query(User).filter(User.googleid == userid).first()
-#
-# @app.route('/process_index.svg', methods=('GET', 'HEAD'))
-# @cache_for(hours=12)
-# def index_svg():
-#     """a dynamic svg fancy hu"""
-#     xml = render_template('indexsvg.svg', color="#f00")
-#     app.pyn.close()
-#     return Response(xml, mimetype='image/svg+xml')
-#
-# @app.route('/process_help.svg', methods=('GET', 'HEAD'))
-# @cache_for(hours=12)
-# def help_svg():
-#     """another dynamic svg for the help page"""
-#     xml = render_template('helpsvg.svg', color="#f00")
-#     app.pyn.close()
-#     return Response(xml, mimetype='image/svg+xml')
-#
+
 @app.before_request
 def before_request_func():
     """do this before any request"""
@@ -165,7 +136,6 @@ def before_request_func():
 
         'apprank': ('App rank', '/rankapp'),
         'profile': ('My profile', '/userprofile'),
-        'about': ('help', '/help'),
         'contact': ('Contact', '/contact')
     }
 
@@ -239,33 +209,7 @@ def customlogin():
     app.session.close()
     app.pyn.close()
     return "fail"
-#
-# @app.route('/logout')
-# @dont_cache()
-# @login_required
-# def logout():
-#     """
-#         here you can logout, it is not used since you login via google oauth.
-#         So as soon as you are on the site you are loggedin
-#     """
-#     logout_user()
-#     app.session.close()
-#     app.pyn.close()
-#     return redirect('/')
-#
-# @app.route('/contact')
-# @cache_for(hours=12)
-# @login_required
-# def contact():
-#     """Showin a contact form !"""
-#     app.data['pagename'] = 'Contact'
-#     result = render_template('contact.html', data=app.data)
-#     app.session.close()
-#     app.pyn.close()
-#     return result
-#
-#
-#
+
 @app.route('/authorize')
 def authorize():
     """part of the google oauth login"""
@@ -299,19 +243,33 @@ def authorize():
             login_user(newuser)
 
     app.session.close()
-    return redirect(browsersession['redirect'])
+    if 'redirect' in browsersession:
+        return redirect(browsersession['redirect'])
+    else:
+        return redirect("/")
 
-# @app.route('/')
-# @cache_for(hours=12)
-# def index():
-#
-#     app.data['pagename'] = 'Trade A Rate'
-#     result = render_template('index.html', data=app.data)
-#     app.session.close()
-#     app.pyn.close()
-#     return result
-#
-#
+@app.route('/')
+@cache_for(hours=12)
+def index():
+
+    app.data['pagename'] = 'Trade A Rate'
+    result = render_template('index.html', data=app.data)
+    app.session.close()
+    app.pyn.close()
+    return result
+
+@app.route("/all_keywords")
+def all_keywords():
+    results = app.session.query(Searchkey).all()
+
+    app.data['data'] = [x._asdict() for x in results]
+
+    pprint.pprint(app.data['data'])
+
+    result = render_template('alltrades.html', data=app.data)
+    app.session.close()
+    app.pyn.close()
+    return result
 
 @app.route("/rankapp/<searchkey>")
 @dont_cache()
@@ -321,12 +279,14 @@ def rankapp(searchkey):
 
     searchkey = searchkey.strip().lower()
 
-    results = app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).filter(Searchkey.searchsentence == searchkey)
-    # labels = [x[2].split(",") for x in results]
-    # labels = set(sum(labels, []))
-    # results = [ {'color':convertToColor(x[0]), 'data':[int(x) for x in x[1].split("-")], 'name':x[0]} for x in results]
-    print(results.all())
-    return "kud !"
+    results = app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).filter(Searchkey.searchsentence == searchkey).all()
+
+
+    if results:
+        labels = results[0].first_rank_plus_twelfe()
+    else:
+        labels = []
+
 
     app.data['searchkey'] = searchkey
     app.data['labels'] = labels
@@ -338,15 +298,9 @@ def rankapp(searchkey):
         app.session.commit()
         app.data['data'] = []
     else:
-        app.data['data'] = results
+        app.data['data'] = [{'stuff': x.get_ranks(),'name': x.name, 'color': convertToColor(x.name)} for x in results]
+
     result = render_template('rankapp.html', data=app.data)
     app.session.close()
     app.pyn.close()
     return result
-#
-# @app.after_request
-# def set_response_headers(response):
-#     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-#     response.headers['Pragma'] = 'no-cache'
-#     response.headers['Expires'] = '0'
-#     return response

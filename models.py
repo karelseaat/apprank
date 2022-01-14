@@ -5,6 +5,8 @@ from sqlalchemy import Table, Column, ForeignKey, String, Integer, Boolean, Date
 from sqlalchemy_utils import get_hybrid_properties
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from dateutil.relativedelta import relativedelta
+
 
 Base = declarative_base(name="Base")
 metadata = Base.metadata
@@ -28,8 +30,8 @@ class DictSerializableMixin(Base):
                 setattr(self, key, val)
 
 user_search_association = Table('usersearch', Base.metadata,
-    Column('user_id', ForeignKey('users.id'), primary_key=True),
-    Column('searchkey_id', ForeignKey('searchkey.id'), primary_key=True)
+    Column('user_id', ForeignKey('users.id')),
+    Column('searchkey_id', ForeignKey('searchkey.id'))
 )
 
 class User(DictSerializableMixin):
@@ -68,8 +70,8 @@ class User(DictSerializableMixin):
         return False
 
 search_app_association = Table('searchapp', Base.metadata,
-    Column('rankingapp_id', ForeignKey('rankingapp.id'), primary_key=True),
-    Column('searchkey_id', ForeignKey('searchkey.id'), primary_key=True)
+    Column('rankingapp_id', ForeignKey('rankingapp.id')),
+    Column('searchkey_id', ForeignKey('searchkey.id'))
 )
 
 class SearchRank(DictSerializableMixin):
@@ -87,7 +89,6 @@ class Rankapp(DictSerializableMixin):
     appidstring = Column(String(64), nullable=False)
     imageurl = Column(String(256))
 
-
     paid = Column(Boolean, default=False)
     searchkeys = relationship(
         "Searchkey",
@@ -97,12 +98,23 @@ class Rankapp(DictSerializableMixin):
 
     searchranks = relationship(
         "SearchRank",
-        back_populates="rankapp"
+        back_populates="rankapp",
+        order_by=SearchRank.ranktime
     )
+
+    def first_rank_plus_twelfe(self):
+        if self.searchranks:
+            return [(self.searchranks[0].ranktime + relativedelta(weeks=i)) for i in range(52)]
+        else:
+            [(datetime.datetime.now() + relativedelta(weeks=i)) for i in range(52)]
+
 
     def __init__(self, name, idstring):
         self.name = name
         self.appidstring = idstring
+
+    def get_ranks(self):
+        return [x.rank for x in self.searchranks]
 
     def get_url(self):
         """this will get the url for an app back to the apps playstore"""

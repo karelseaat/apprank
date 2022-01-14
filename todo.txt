@@ -21,3 +21,10 @@
 2 rank app page afmaken (done ish)
 3 bezig met de selenium crawler <--
 4 bezig met de graph overview (done)
+
+# die dingen die ook gedaam moeten woorden
+1 logo aan passen
+2 naam van de site aanpassen
+3 dns record voor de site maken
+4 bezig met de playbook
+5 

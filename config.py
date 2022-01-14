@@ -10,8 +10,8 @@ domain = "trade.six-dots.app"
 
 oauthconfig = {
     'name':'google',
-    'client_id':'73190520700-quq0eklkk131ulbukpcokav1khtrupo6.apps.googleusercontent.com',
-    'client_secret':'PcA-dpVsAsqAzIcliLwhxZ7B',
+    'client_id':'165762446949-i93usgf0eslkm7jnfe6aqgfj6p2na85a.apps.googleusercontent.com',
+    'client_secret':'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',
     'access_token_url':'https://accounts.google.com/o/oauth2/token',
     'access_token_params':None,
     'authorize_url':'https://accounts.google.com/o/oauth2/auth',

@@ -1,0 +1,20 @@
+1642093460357	geckodriver	INFO	Listening on 127.0.0.1:53261
+1642093460362	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "46289" "-no-remote" "-profile" "/tmp/rust_mozprofileNMe1VT"
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1642093461242	Marionette	INFO	Marionette enabled
+console.info: MINT: Trying to use the system region (based on LANG).
+console.info: MINT: System region is NL
+console.info: MINT: Trying to use the system region (based on LANG).
+console.info: MINT: System region is NL
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileNMe1VT/search.json.mozlz4", (void 0)))
+console.info: MINT: Loading search-config defaults.
+JavaScript error: resource://gre/modules/TelemetryUtils.jsm, line 154: TypeError: date is undefined
+JavaScript error: resource:///modules/BrowserGlue.jsm, line 4097: TypeError: invalid assignment to const 'dialogReason'
+DevTools listening on ws://localhost:46289/devtools/browser/ac77a7ce-b6da-4320-bd04-4c6fea2b1f0a
+1642093462803	Marionette	INFO	Listening on port 43131
+1642093462890	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1642093706107	Marionette	INFO	Stopped listening on port 43131
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.

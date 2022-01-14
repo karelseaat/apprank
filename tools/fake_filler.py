@@ -42,11 +42,10 @@ def random_searchkeys(searchkey):
     for _ in range(10):
         name = faker.name()
         appidstring = faker.name()
-        for _ in range(10):
-            rankapp = Rankapp(name, appidstring)
+        rankapp = Rankapp(name, appidstring)
 
-            for _ in range(5):
-                rankapp.searchranks.append(random_searchrank(SearchRank()))
+        for _ in range(10):
+            rankapp.searchranks.append(random_searchrank(SearchRank()))
 
             searchkey.rankapps.append(rankapp)
     return searchkey

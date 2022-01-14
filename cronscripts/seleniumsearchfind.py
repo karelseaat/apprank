@@ -9,14 +9,20 @@ import time
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import *
 
+from models import User, Rankapp, Searchkey
+from sqlalchemy import func, desc
+
+from config import make_session
+
+session = make_session()
 options = Options()
-options.add_argument("--headless")
+# options.add_argument("--headless")
 
 driver = webdriver.Firefox(executable_path= r"/home/aat/Desktop/geckodriver", options=options)
 
 driver.get('https://play.google.com/store/search?q=altitude meter&c=apps')
+
 
 
 SCROLL_PAUSE_TIME = 5
@@ -40,7 +46,6 @@ while True:
 
 books = driver.find_element_by_class_name("Ktdaqe").find_elements_by_tag_name('c-wiz')
 
-# books = driver.find_elements_by_tag_name('c-wiz')
 
 for book in books:
 
