@@ -1,7 +1,7 @@
 import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy import Table, Column, ForeignKey, String, Integer, Boolean, Date
+from sqlalchemy import Table, Column, ForeignKey, String, Integer, Boolean, Date, DateTime
 from sqlalchemy_utils import get_hybrid_properties
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -80,7 +80,7 @@ class SearchRank(DictSerializableMixin):
     rankapp = relationship("Rankapp", back_populates="searchranks")
     rankapp_id = Column(ForeignKey('rankingapp.id'), index=True)
     rank = Column(Integer)
-    ranktime = Column(Date, default=datetime.datetime.utcnow)
+    ranktime = Column(DateTime, default=datetime.datetime.utcnow)
 
 class Rankapp(DictSerializableMixin):
     __tablename__ = 'rankingapp'
@@ -108,6 +108,12 @@ class Rankapp(DictSerializableMixin):
         else:
             [(datetime.datetime.now() + relativedelta(weeks=i)) for i in range(52)]
 
+    def get_first_rank(self):
+        ranks = self.searchranks
+        if ranks:
+            return ranks[0]
+        else:
+            return []
 
     def __init__(self, name, idstring):
         self.name = name
@@ -135,3 +141,8 @@ class Searchkey(DictSerializableMixin):
         secondary=user_search_association,
         back_populates="searchkeys"
     )
+
+    def get_first_age(self):
+
+        if self.rankapps:
+            return (datetime.datetime.now() - self.rankapps[0].get_first_rank().ranktime).days

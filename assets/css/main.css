@@ -13562,6 +13562,11 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
   padding: 3rem 1.5rem;
 }
 
+.bigsection {
+  padding: 3rem 1.5rem;
+  min-height: 100px;
+}
+
 @media screen and (min-width: 1024px) {
   .section.is-medium {
     padding: 9rem 1.5rem;
@@ -13897,6 +13902,10 @@ section.hero.is-hero-bar .hero-body .button.is-hero-button:hover {
 .card .card-content hr {
   margin-left: -1.5rem;
   margin-right: -1.5rem;
+}
+
+.chart-area {
+  height: 2000px;
 }
 
 .card .is-widget-icon .icon {

@@ -134,7 +134,7 @@ def before_request_func():
 
     navigation = {
 
-        'apprank': ('App rank', '/rankapp'),
+        'apprank': ('All keywords', '/all_keywords'),
         'profile': ('My profile', '/userprofile'),
         'contact': ('Contact', '/contact')
     }
@@ -262,14 +262,17 @@ def index():
 def all_keywords():
     results = app.session.query(Searchkey).all()
 
-    app.data['data'] = [x._asdict() for x in results]
-
-    pprint.pprint(app.data['data'])
+    app.data['data'] = results
 
     result = render_template('alltrades.html', data=app.data)
     app.session.close()
     app.pyn.close()
     return result
+
+@app.route("/add")
+@login_required
+def add_it():
+    return "lel"
 
 @app.route("/rankapp/<searchkey>")
 @dont_cache()

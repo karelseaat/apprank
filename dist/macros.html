@@ -52,7 +52,7 @@
 
 {% macro build_add_button(data, navigate ,redirectto) %}
 
-<button class="button is-medium is-primary" type="button" onclick="window.location.href='/{{ navigate }}?redirectto=/{{ redirectto }}'">
+<button class="button is-medium is-primary" type="button" onclick="window.location.href='/{{ navigate }}'">
   <span>{{ trans("Add", self) }}</span>
   <span class="icon"><i class="mdi mdi-folder-plus"></i></span>
 </button>
@@ -122,12 +122,9 @@
     <tr>
       <th>{{ trans("Keyword", self) }}</th>
 
-      <th>{{ trans("First search", self) }}</th>
-      <th>
-        <{{ trans("Status", self) }}
-      </th>
-      <th>{{ trans("User", self) }}</th>
-      <th>{{ trans("Use imager", self) }}</th>
+      <th>{{ trans("First search age", self) }}</th>
+
+
       <th></th>
     </tr>
   </thead>
@@ -136,11 +133,10 @@
     <tr>
 
       <td>{{ my_item.searchsentence }}</td>
-      <td>{{ my_item.searchsentence }}</td>
-      <td>{{ my_item.searchsentence }}</td>
+      <td>{{ my_item.get_first_age() }}</td>
       <td class="is-actions-cell">
         <div class="buttons is-right">
-          <button class="button is-small is-primary" type="button" onclick="window.location.href='/show/{{ my_item.id }}';">
+          <button class="button is-small is-primary" type="button" onclick="window.location.href='/rankapp/{{ my_item.searchsentence }}';">
             <span class="icon"><i class="mdi mdi-magnify"></i></span>
           </button>
       </td>

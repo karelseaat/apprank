@@ -12,17 +12,17 @@
 </section>
 
 {% if not data.data %}
-<section class="section">
+<section class="section ">
   <div class="card">
     <div class="card-content">
-      <p>The searchkey for "{{ data.searchkey }}" is not found, come back in a week and we will have history data for this search key. </p>
+      <p>The searchkey for "{{ data.searchkey }}" is not found, login and add it to the keyword list</p>
     </div>
   </div>
 </section>
 
 {% else %}
 
-<section class="section">
+<section class="is-large">
   {{ build_store_graph(data) }}
 </section>
 
