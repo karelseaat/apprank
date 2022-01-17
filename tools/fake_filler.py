@@ -38,10 +38,6 @@ def random_searchkeys(searchkey):
         appidstring = faker.name()
         rankapp = Rankapp(name, appidstring)
 
-        # for _ in range(10):
-        #     rankapp.searchranks.append(random_searchrank(SearchRank()))
-        #
-        #     searchkey.rankapps.append(rankapp)
     return searchkey
 
 def fake_filler():

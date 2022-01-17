@@ -64,12 +64,12 @@ flask_cache_control.init_app(app)
 
 oauth = OAuth(app)
 oauth.register(**oauthconfig)
-#
+
 @app.errorhandler(401)
 def unauthorized(_):
     """the error handler for unauthorised"""
-    browsersession['redirect'] = request.path
-    return redirect('/login')
+    flash('You need to login to go to that page!', 'has-text-danger')
+    return redirect("/")
 
 def local_breakdown(local):
     """Will filter out the locale language from a structure"""
@@ -252,7 +252,7 @@ def authorize():
 @cache_for(hours=12)
 def index():
 
-    app.data['pagename'] = 'Trade A Rate'
+    app.data['pagename'] = 'App Rank'
     result = render_template('index.html', data=app.data)
     app.session.close()
     app.pyn.close()
@@ -269,14 +269,67 @@ def all_keywords():
     app.pyn.close()
     return result
 
+@app.route('/logout')
+@dont_cache()
+@login_required
+def logout():
+    """
+        here you can logout, it is not used since you login via google oauth.
+        So as soon as you are on the site you are loggedin
+    """
+    browsersession['redirect'] = "/"
+    logout_user()
+    app.session.close()
+    app.pyn.close()
+    return redirect('/')
+
+@app.route("/processadd", methods = ['POST'])
+@dont_cache()
+@login_required
+def processadd():
+    """This will process the post of a form to add a trade"""
+
+
+    searchkeys = request.form.get('searchkeys')
+
+    if not searchkeys:
+        app.session.close()
+        app.pyn.close()
+        flash('No search keys', 'has-text-danger')
+        return redirect('/add')
+
+    results = app.session.query(Searchkey).filter(Searchkey.searchsentence != searchkeys).all()
+
+    if not results:
+
+        searchkey = Searchkey()
+        searchkey.searchsentence = searchkeys
+        app.session.add(searchkey)
+        app.session.commit()
+        app.session.close()
+        app.pyn.close()
+
+        flash(str("Added search keys in the database come back in a week to see the rank results"), 'has-text-danger')
+        return redirect('/all_keywords')
+
+
+    app.session.close()
+    app.pyn.close()
+
+    return redirect(f'/rankapp/{searchkeys}')
+
 @app.route("/add")
 @login_required
 def add_it():
-    return "lel"
+
+
+    result = render_template('add.html', data=app.data)
+    app.session.close()
+    app.pyn.close()
+    return result
 
 @app.route("/rankapp/<searchkey>")
 @dont_cache()
-@login_required
 def rankapp(searchkey):
     """ dit gaat veel dingen doen, het laten zien van de grafieken, ook displayen van de zoek bar het gaat ook een zoekterm opslaan als je een nieuwe invoert"""
 
@@ -293,15 +346,10 @@ def rankapp(searchkey):
 
     app.data['searchkey'] = searchkey
     app.data['labels'] = labels
-    if not results:
-        search = Searchkey()
-        search.searchsentence = searchkey
-        search.user = current_user
-        app.session.add(search)
-        app.session.commit()
-        app.data['data'] = []
-    else:
+    if results:
         app.data['data'] = [{'stuff': x.get_ranks(),'name': x.name, 'color': convertToColor(x.name)} for x in results]
+    else:
+        app.data['data'] = []
 
     result = render_template('rankapp.html', data=app.data)
     app.session.close()
