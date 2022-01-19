@@ -17,6 +17,9 @@ toml = "*"
 flask-cachecontrol = "*"
 colour = "*"
 selenium = "*"
+paste = "*"
+cerberus = "*"
+flask-mail = "*"
 
 [dev-packages]
 

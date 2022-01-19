@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c8d59e3e1d89a8fbe6bbf1f4dcb8c9673917c37d5ba65a5180495b33936dcae0"
+            "sha256": "3810c4269ed5b3b487ec5b317eac1710bd58fa4e8b9913f8cfcdf7bca9a82aa0"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -40,13 +40,26 @@
             "index": "pypi",
             "version": "==0.15.5"
         },
+        "blinker": {
+            "hashes": [
+                "sha256:471aee25f3992bd325afa3772f1063dbdbbca947a041b8b89466dc00d606f8b6"
+            ],
+            "version": "==1.4"
+        },
         "cachelib": {
             "hashes": [
-                "sha256:378f3bd2d43381aedc6c02a4cfd11182b3c90eb77ac8e3203401df93b4b304cb",
-                "sha256:dfda806c0929c131f6f6c3fe555b52b953c69bd84a6425ddfbdced289b65b48e"
+                "sha256:0baa926a23924c04ae1354091478b15b3b24e6cf5931dd159452afda5f65babd",
+                "sha256:6da323fdb16c9f53424a229132646a469b2d046e687fa353b92303910c99bc18"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==0.5.0"
+            "version": "==0.6.0"
+        },
+        "cerberus": {
+            "hashes": [
+                "sha256:d1b21b3954b2498d9a79edf16b3170a3ac1021df88d197dc2ce5928ba519237c"
+            ],
+            "index": "pypi",
+            "version": "==1.3.4"
         },
         "certifi": {
             "hashes": [
@@ -199,6 +212,13 @@
             ],
             "index": "pypi",
             "version": "==0.5.0"
+        },
+        "flask-mail": {
+            "hashes": [
+                "sha256:22e5eb9a940bf407bcf30410ecc3708f3c56cc44b29c34e1726fe85006935f41"
+            ],
+            "index": "pypi",
+            "version": "==0.9.1"
         },
         "flask-oauthlib": {
             "hashes": [
@@ -391,6 +411,14 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==1.1.0"
+        },
+        "paste": {
+            "hashes": [
+                "sha256:1b095c42dc91d426f3ae85101796b14d265887f8f36f3aad143a5f29effdc39d",
+                "sha256:8e08200a570f7e29dfafd4eea0e1b38a6193cfda6446bb515db74250b632c53b"
+            ],
+            "index": "pypi",
+            "version": "==3.5.0"
         },
         "pycparser": {
             "hashes": [
