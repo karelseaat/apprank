@@ -413,7 +413,7 @@ def processcontact():
         recipients=['sixdots.soft@gmail.com']
     )
 
-    # mail.send(msg)
+    mail.send(msg)
 
     app.session.close()
     app.pyn.close()
