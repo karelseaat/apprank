@@ -13,7 +13,8 @@ from flask import (
     session as browsersession
 )
 
-import pprint
+from cerberus import Validator
+from flask_mail import Mail, Message
 
 from authlib.integrations.flask_client import OAuth
 
@@ -65,6 +66,12 @@ flask_cache_control.init_app(app)
 oauth = OAuth(app)
 oauth.register(**oauthconfig)
 
+vallcontact = Validator({
+    'subject':{'required': True, 'type': 'string'},
+    'message':{'required': True, 'type': 'string'},
+    # 'g-recaptcha-response': {'required': True}
+})
+
 @app.errorhandler(401)
 def unauthorized(_):
     """the error handler for unauthorised"""
@@ -86,6 +93,14 @@ def convertToColor(s):
 
     return klont.hex
 
+def is_human(captcha_response):
+    """ Validating recaptcha response from google server
+        Returns True captcha test passed for submitted form else returns False.
+    """
+    payload = {'response':captcha_response, 'secret':recaptchasecret}
+    response = requests.post("https://www.google.com/recaptcha/api/siteverify", payload)
+    response_text = json.loads(response.text)
+    return response_text['success']
 
 def pagination(db_object, itemnum):
     """it does the pagination for db results"""
@@ -263,6 +278,7 @@ def all_keywords():
     results = app.session.query(Searchkey).all()
 
     app.data['data'] = results
+    app.data['pagename'] = 'All keywords'
 
     result = render_template('alltrades.html', data=app.data)
     app.session.close()
@@ -298,12 +314,11 @@ def processadd():
         flash('No search keys', 'has-text-danger')
         return redirect('/add')
 
-    results = app.session.query(Searchkey).filter(Searchkey.searchsentence != searchkeys).all()
+    results = app.session.query(Searchkey).filter(Searchkey.searchsentence == searchkeys).all()
 
     if not results:
-
         searchkey = Searchkey()
-        searchkey.searchsentence = searchkeys
+        searchkey.searchsentence = searchkeys.lower()
         app.session.add(searchkey)
         app.session.commit()
         app.session.close()
@@ -333,10 +348,10 @@ def add_it():
 def rankapp(searchkey):
     """ dit gaat veel dingen doen, het laten zien van de grafieken, ook displayen van de zoek bar het gaat ook een zoekterm opslaan als je een nieuwe invoert"""
 
+
     searchkey = searchkey.strip().lower()
-
+    app.data['pagename'] = 'Playstore rank history'
     results = app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).filter(Searchkey.searchsentence == searchkey).all()
-
 
     if results:
         labels = results[0].first_rank_plus_twelfe()
@@ -355,3 +370,54 @@ def rankapp(searchkey):
     app.session.close()
     app.pyn.close()
     return result
+
+@app.route('/contact')
+@cache_for(hours=12)
+def contact():
+    """Showin a contact form !"""
+    app.data['pagename'] = 'Contact'
+    result = render_template('contact.html', data=app.data)
+    app.session.close()
+    app.pyn.close()
+    return result
+
+@app.route('/processcontact', methods = ['POST'])
+@dont_cache()
+@login_required
+def processcontact():
+    """this will prcess a contact form"""
+    vallcontact.validate(dict(request.form))
+
+    message = request.form.get('message')
+    subject = request.form.get('subject')
+
+
+    if not message:
+        flash("no message?!", 'has-text-danger')
+        app.session.close()
+        app.pyn.close()
+        return redirect('/')
+
+    if vallcontact.errors:
+        for key, val in vallcontact.errors.items():
+            flash(key + ": " + val[0], 'has-text-danger')
+
+        app.session.close()
+        app.pyn.close()
+        return redirect('/')
+
+    mail = Mail(app)
+
+    msg = Message(
+        f"App rank contact form!, {subject}",
+        sender = 'sixdots.soft@gmail.com',
+        body= f"name: {current_user.fullname}\nemail: {current_user.email}\nmessage: {message}",
+        recipients=['sixdots.soft@gmail.com']
+    )
+
+    mail.send(msg)
+
+    app.session.close()
+    app.pyn.close()
+    flash("Message send !", 'has-text-primary')
+    return redirect('/all_keywords')

@@ -18,7 +18,11 @@ var chartColors = {
   }
 };
 
-var ctx = document.getElementById('big-line-chart').getContext('2d');
+var element = document.getElementById('big-line-chart')
+
+if (element != null) {
+var ctx = element.getContext('2d');
+
 new Chart(ctx, {
   type: 'line',
   data: {
@@ -117,3 +121,5 @@ new Chart(ctx, {
     }
   }
 });
+
+}

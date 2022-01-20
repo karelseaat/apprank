@@ -18,6 +18,9 @@ flask-cachecontrol = "*"
 colour = "*"
 selenium = "*"
 pyvirtualdisplay = "*"
+paste = "*"
+cerberus = "*"
+flask-mail = "*"
 
 [dev-packages]
 

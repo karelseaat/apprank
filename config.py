@@ -23,8 +23,8 @@ oauthconfig = {
 
 CONNECTIONURI = "sqlite:////{}/searchrank.sqlite".format(os.path.dirname(__file__))
 
-recaptchasecret = "6Ld8rjMcAAAAAPDQI6igBibm24JIwHABlL5uw2RX"
-recapchasitekey = "6Ld8rjMcAAAAAFbplPzzBMF-iZsXfvmxUG5Q5cZB"
+recaptchasecret = "6LfRxyIeAAAAAI6BAp4-34xICXyfbyjYWk92QCpD"
+recapchasitekey = "6LfRxyIeAAAAADWz_2kzZgLEez07WtiA5jz_CeXF"
 
 def make_session():
     engine = create_engine(CONNECTIONURI, echo=False, connect_args={'check_same_thread': False})
