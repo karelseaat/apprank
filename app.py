@@ -316,9 +316,8 @@ def processadd():
     results = app.session.query(Searchkey).filter(Searchkey.searchsentence == searchkeys).all()
 
     if not results:
-        print("no results !")
         searchkey = Searchkey()
-        searchkey.searchsentence = searchkeys
+        searchkey.searchsentence = searchkeys.lower()
         app.session.add(searchkey)
         app.session.commit()
         app.session.close()
