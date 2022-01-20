@@ -278,6 +278,7 @@ def all_keywords():
     results = app.session.query(Searchkey).all()
 
     app.data['data'] = results
+    app.data['pagename'] = 'All keywords'
 
     result = render_template('alltrades.html', data=app.data)
     app.session.close()
@@ -347,7 +348,9 @@ def add_it():
 def rankapp(searchkey):
     """ dit gaat veel dingen doen, het laten zien van de grafieken, ook displayen van de zoek bar het gaat ook een zoekterm opslaan als je een nieuwe invoert"""
 
+
     searchkey = searchkey.strip().lower()
+    app.data['pagename'] = 'Playstore rank history'
     results = app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).filter(Searchkey.searchsentence == searchkey).all()
 
     if results:
