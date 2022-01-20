@@ -15,6 +15,11 @@ from sqlalchemy import func, desc
 
 from config import make_session
 
+from pyvirtualdisplay import Display
+from selenium.webdriver.chrome.service import Service
+
+display = Display(visible=0, size=(1024, 768))
+display.start()
 
 
 def get_apps(searchkey):
@@ -32,9 +37,7 @@ def get_apps(searchkey):
             searchrank.rank = books.index(book)
             rankapp.searchranks.append(searchrank)
             rankapp.searchkeys.append(searchkey)
-            # searchkey.rankapps.append(rankapp)
 
-            # session.add(searchkey)
             session.add(rankapp)
 
     session.commit()
@@ -46,12 +49,12 @@ options = Options()
 options.add_argument("--headless")
 
 
-
 results = session.query(Searchkey).all()
 
 
 for result in results:
-    driver = webdriver.Firefox(executable_path= r"/home/aat/Desktop/geckodriver", options=options)
+    ser = Service("../geckodriver")
+    driver = webdriver.Firefox(service=ser, options=options)
     driver.get(f'https://play.google.com/store/search?q={result.searchsentence}&c=apps')
     last_height = driver.execute_script("return document.body.scrollHeight")
 
@@ -71,3 +74,5 @@ for result in results:
     get_apps(result)
 
     driver.quit()
+
+display.stop()
