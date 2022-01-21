@@ -78,7 +78,7 @@ class SearchRank(DictSerializableMixin):
     __tablename__ = 'searchrank'
     id = Column(Integer, primary_key=True)
     rankapp = relationship("Rankapp", back_populates="searchranks")
-    rankapp_id = Column(ForeignKey('rankingapp.id'), index=True)
+    rankapp_id = Column(ForeignKey('rankingapp.id'))
     rank = Column(Integer)
     ranktime = Column(DateTime, default=datetime.datetime.utcnow)
 
@@ -99,14 +99,14 @@ class Rankapp(DictSerializableMixin):
     searchranks = relationship(
         "SearchRank",
         back_populates="rankapp",
-        order_by=SearchRank.ranktime
+        # order_by=SearchRank.ranktime
     )
 
     def first_rank_plus_twelfe(self):
         if self.searchranks:
-            return [(self.searchranks[0].ranktime + relativedelta(weeks=i)) for i in range(52)]
+            return [(self.searchranks[0].ranktime + relativedelta(weeks=i)).strftime("%d/%m/%Y") for i in range(52)]
         else:
-            [(datetime.datetime.now() + relativedelta(weeks=i)) for i in range(52)]
+            [(datetime.datetime.now() + relativedelta(weeks=i)).strftime("%d/%m/%Y") for i in range(52)]
 
     def get_first_rank(self):
         ranks = self.searchranks
@@ -121,6 +121,7 @@ class Rankapp(DictSerializableMixin):
 
     def get_ranks(self):
         return [x.rank for x in self.searchranks]
+        # return self.searchranks
 
     def get_url(self):
         """this will get the url for an app back to the apps playstore"""

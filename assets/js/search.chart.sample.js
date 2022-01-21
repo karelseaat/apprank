@@ -45,6 +45,11 @@ var newchart = new Chart(ctx, {
     },
     scales: {
       yAxes: [{
+
+        scaleLabel: {
+        display: true,
+        labelString: 'store pos'
+      },
         barPercentage: 1.6,
         gridLines: {
           drawBorder: false,
@@ -52,11 +57,16 @@ var newchart = new Chart(ctx, {
           zeroLineColor: 'transparent'
         },
         ticks: {
+          reverse: true,
           padding: 20,
           fontColor: '#9a9a9a'
         }
       }],
       xAxes: [{
+        scaleLabel: {
+        display: true,
+        labelString: 'At date'
+      },
         barPercentage: 1.6,
         gridLines: {
           drawBorder: false,

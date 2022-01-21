@@ -1,4 +1,4 @@
-{% from "macros.html" import build_badge, build_card_header, build_store_graph %}
+{% from "macros.html" import build_badge, build_card_header, build_store_graph, build_pagination %}
 
 {% extends "base2.html" %}
 {% block content %}
@@ -25,6 +25,8 @@
 <section class="is-large">
   {{ build_store_graph(data) }}
 </section>
+
+
 
 {% endif %}
 

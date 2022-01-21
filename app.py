@@ -26,6 +26,7 @@ from flask_login import (
     LoginManager
 )
 
+import os
 
 from flask_cachecontrol import (FlaskCacheControl, cache_for, dont_cache)
 from config import (
@@ -37,7 +38,7 @@ from config import (
     domain
 )
 
-from models import User, Rankapp, Searchkey
+from models import User, Rankapp, Searchkey, SearchRank
 from sqlalchemy import func, desc
 
 from lib.filtersort import FilterSort
@@ -120,6 +121,10 @@ def pagination(db_object, itemnum):
         all()
     )
 
+def round_up(num):
+    """does rounding up without importing the math module"""
+    return int(-(-num // 1))
+
 def nongetpagination(db_object, itemnum):
     """it does the pagination for db results"""
     pagenum = 0
@@ -127,11 +132,34 @@ def nongetpagination(db_object, itemnum):
     if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
         pagenum = int(request.args.get('pagenum'))
 
-    total = db_object.count()
+
+    total = app.session.query(db_object).count()
     app.data['total'] = list(range(1, round_up(total/itemnum)+1))
     app.data['pagenum'] = pagenum+1, round_up(total/itemnum)
-    return db_object.limit(itemnum).offset(pagenum*itemnum)
-#
+    return (
+        app.
+        session.
+        query(db_object).
+        limit(itemnum).
+        offset(pagenum*itemnum)
+    )
+
+def extrapagina(result, itemnum):
+    pagenum = 0
+
+    if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
+        pagenum = int(request.args.get('pagenum'))
+
+    print(result)
+
+    total = result.count()
+    print(total)
+    app.data['total'] = list(range(1, round_up(total/itemnum)+1))
+    app.data['pagenum'] = pagenum+1, round_up(total/itemnum)
+
+    return result.limit(itemnum).offset(pagenum*itemnum)
+
+
 @login_manager.user_loader
 def load_user(userid):
     """we need this for authentication"""
@@ -161,7 +189,8 @@ def before_request_func():
         'navigation': navigation,
         'recapchasitekey': recapchasitekey,
         'data': None,
-        'logged-in': current_user.is_authenticated
+        'logged-in': current_user.is_authenticated,
+        'dev': os.getenv('FLASK_ENV')
     }
 
     app.data['currentnavigation'] = request.full_path[1:-1]
@@ -203,27 +232,27 @@ def login():
     app.pyn.close()
     return result
 
-@app.route("/customlogin", methods = ['POST'])
+@app.route("/developlogin")
 @dont_cache()
-def customlogin():
-    """a custom login that will be used by the locust runner, for now it is a security risk"""
-    if 'beest' in request.form and request.form.get('beest') == "Lollozotoeoobnenfmnbsf":
+def developlogin():
+
+    if app.data['dev'] == "development":
         customuser = app.session.query(User).filter(User.googleid == 666).first()
 
         if not customuser:
             customuser = User(666)
-            customuser.fullname = "customuser"
+            customuser.fullname = "developer"
+            customuser.picture = "/assets/img/searchrank.svg"
             app.session.add(customuser)
             app.session.commit()
 
         login_user(customuser)
         app.session.close()
         app.pyn.close()
-        return "success"
 
-    app.session.close()
-    app.pyn.close()
-    return "fail"
+    return redirect("/")
+
+
 
 @app.route('/authorize')
 def authorize():
@@ -316,6 +345,7 @@ def processadd():
 
     results = app.session.query(Searchkey).filter(Searchkey.searchsentence == searchkeys).all()
 
+
     if not results:
         searchkey = Searchkey()
         searchkey.searchsentence = searchkeys.lower()
@@ -351,13 +381,14 @@ def rankapp(searchkey):
 
     searchkey = searchkey.strip().lower()
     app.data['pagename'] = 'Playstore rank history'
-    results = app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).filter(Searchkey.searchsentence == searchkey).all()
+
+    results = app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.searchsentence == searchkey).order_by(SearchRank.ranktime, SearchRank.rank).all()
+
 
     if results:
         labels = results[0].first_rank_plus_twelfe()
     else:
         labels = []
-
 
     app.data['searchkey'] = searchkey
     app.data['labels'] = labels

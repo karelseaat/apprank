@@ -29,10 +29,19 @@
 
       {% else %}
       <div class="navbar-item has-divider">
+        {% if data.dev == 'development' %}
+        <a href="/developlogin" class="navbar-item">
+          <span class="icon"><i class="mdi mdi-login"></i></span>
+          <span>Login</span>
+        </a>
+        {% else %}
         <a href="/login" class="navbar-item">
           <span class="icon"><i class="mdi mdi-login"></i></span>
           <span>Login</span>
         </a>
+        {% endif %}
+
+
       </div>
       {% endif %}
 

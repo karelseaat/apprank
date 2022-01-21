@@ -31,14 +31,19 @@ def get_apps(searchkey):
         ass = book.find_elements_by_tag_name('a')
         if len(ass) >= 4:
 
-            rankapp = Rankapp(ass[2].find_elements_by_tag_name('div')[0].get_attribute('innerHTML'), ass[0].get_attribute('href').split("=")[1])
-            rankapp.imageurl = book.find_elements_by_tag_name('img')[2].get_attribute('src')
-            searchrank= SearchRank()
-            searchrank.rank = books.index(book)
-            rankapp.searchranks.append(searchrank)
-            rankapp.searchkeys.append(searchkey)
+            idstring = ass[0].get_attribute('href').split("=")[1]
+            rankapp = session.query(Rankapp).filter(idstring==Rankapp.appidstring).first()
+            if not rankapp:
+                rankapp = Rankapp(ass[2].find_elements_by_tag_name('div')[0].get_attribute('innerHTML'), idstring)
+                rankapp.imageurl = book.find_elements_by_tag_name('img')[2].get_attribute('src')
 
-            session.add(rankapp)
+            searchrank= SearchRank()
+            searchrank.rank = books.index(book) + 1
+            if searchrank.rank <= 50:
+                rankapp.searchranks.append(searchrank)
+                rankapp.searchkeys.append(searchkey)
+                print(f"adding {rankapp.name} to db.")
+                session.add(rankapp)
 
     session.commit()
 
