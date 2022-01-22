@@ -21,6 +21,7 @@ pyvirtualdisplay = "*"
 paste = "*"
 cerberus = "*"
 flask-mail = "*"
+geckodriver-autoinstaller = "*"
 
 [dev-packages]
 
