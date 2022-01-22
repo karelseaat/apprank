@@ -59,7 +59,7 @@ results = session.query(Searchkey).all()
 
 for result in results:
     ser = Service("../geckodriver")
-    driver = webdriver.Firefox(service=ser, options=options)
+    driver = webdriver.Firefox(service=ser, options=options, log_path = "./logit.log")
     driver.get(f'https://play.google.com/store/search?q={result.searchsentence}&c=apps')
     last_height = driver.execute_script("return document.body.scrollHeight")
 
