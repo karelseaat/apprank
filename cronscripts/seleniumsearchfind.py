@@ -17,10 +17,12 @@ from config import make_session
 
 from pyvirtualdisplay import Display
 from selenium.webdriver.chrome.service import Service
+import geckodriver_autoinstaller
 
 display = Display(visible=0, size=(1024, 768))
 display.start()
 
+geckodriver_autoinstaller.install()
 
 def get_apps(searchkey):
 
@@ -58,8 +60,8 @@ results = session.query(Searchkey).all()
 
 
 for result in results:
-    ser = Service("../geckodriver", log_path="service_log_path.log")
-    driver = webdriver.Firefox(service=ser, options=options)
+    # ser = Service("../geckodriver", log_path="service_log_path.log")
+    driver = webdriver.Firefox(options=options)
     driver.get(f'https://play.google.com/store/search?q={result.searchsentence}&c=apps')
     last_height = driver.execute_script("return document.body.scrollHeight")
 

@@ -3663,3 +3663,47 @@ DevTools listening on ws://localhost:42855/devtools/browser/dc3dff26-fd65-46a2-8
 
 ###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
 
+1642878837642	geckodriver	INFO	Listening on 127.0.0.1:50309
+1642878838155	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--headless" "--remote-debugging-port" "56647" "-no-remote" "-profile" "/tmp/rust_mozprofilecCMpou"
+*** You are running in headless mode.
+1642878838739	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.info: MINT: Trying to use the system region (based on LANG).
+console.info: MINT: System region is US
+console.info: MINT: Trying to use the system region (based on LANG).
+console.info: MINT: System region is US
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilecCMpou/search.json.mozlz4", (void 0)))
+JavaScript error: resource:///modules/BrowserGlue.jsm, line 4097: TypeError: invalid assignment to const 'dialogReason'
+console.info: MINT: Loading search-config defaults.
+JavaScript error: resource://gre/modules/TelemetryUtils.jsm, line 154: TypeError: date is undefined
+DevTools listening on ws://localhost:56647/devtools/browser/89505188-b90d-4a27-8cab-16dbd6be85c3
+1642878840124	Marionette	INFO	Listening on port 38781
+1642878840267	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1642878878720	Marionette	INFO	Stopped listening on port 38781
+
+###!!! [Parent][MessageChannel] Error: (msgtype=0x39014B,name=PContent::Reply_DiscardBrowsingContext) Closed channel: cannot send/recv
+
+
+###!!! [Parent][MessageChannel] Error: (msgtype=0x39014B,name=PContent::Reply_DiscardBrowsingContext) Closed channel: cannot send/recv
+
+
+###!!! [Parent][MessageChannel] Error: (msgtype=0x390078,name=PContent::Msg_DestroyBrowsingContextGroup) Closed channel: cannot send/recv
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
