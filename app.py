@@ -26,6 +26,8 @@ from flask_login import (
     LoginManager
 )
 
+from sqlalchemy import asc, desc
+
 import os
 
 from flask_cachecontrol import (FlaskCacheControl, cache_for, dont_cache)
@@ -150,10 +152,9 @@ def extrapagina(result, itemnum):
     if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
         pagenum = int(request.args.get('pagenum'))
 
-    print(result)
 
     total = result.count()
-    print(total)
+
     app.data['total'] = list(range(1, round_up(total/itemnum)+1))
     app.data['pagenum'] = pagenum+1, round_up(total/itemnum)
 
