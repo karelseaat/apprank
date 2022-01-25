@@ -250,10 +250,11 @@ def developlogin():
         app.session.close()
         app.pyn.close()
 
-    return redirect("/")
+    return redirect("/", 303)
 
 
 @app.route('/authorize')
+@dont_cache()
 def authorize():
     """part of the google oauth login"""
     google_auth = oauth.create_client('google')
@@ -287,9 +288,9 @@ def authorize():
 
     app.session.close()
     if 'redirect' in browsersession:
-        return redirect(browsersession['redirect'])
+        return redirect(browsersession['redirect'], 303)
     else:
-        return redirect("/")
+        return redirect("/", 303)
 
 @app.route('/')
 @cache_for(hours=12)

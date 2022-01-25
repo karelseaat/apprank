@@ -8,9 +8,7 @@
     {{ build_card_header('Forms','mdi-ballot') }}
     <div class="card-content">
       <form method="post" action="/processadd" id="demo-form">
-
         <hr>
-
         {{ build_app_add_join(current_user) }}
         <hr>
         {{ build_form_submit(data.recapchasitekey) }}
