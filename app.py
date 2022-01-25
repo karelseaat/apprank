@@ -250,7 +250,7 @@ def developlogin():
         app.session.close()
         app.pyn.close()
 
-    return redirect("/", 303)
+    return redirect("/")
 
 
 @app.route('/authorize')
