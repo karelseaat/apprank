@@ -25,6 +25,13 @@
 # die dingen die ook gedaam moeten woorden
 1 logo aan passen (done)
 2 naam van de site aanpassen (done)
-3 dns record voor de site maken <--
-4 bezig met de playbook
-5
+3 dns record voor de site maken (done)
+4 bezig met de playbook (done)
+5 pause (done)
+
+# polijst tijd
+1 selenium script aapassen dat een app en een search word gekoppeld zijn zodat dezelfde apps onder verschillende searchwords kunnen. (done)
+2 text foutcontrole (done)
+3 remove whitespace from seart form (done)
+4 graph search <--
+5 graph all off all on

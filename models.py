@@ -6,6 +6,7 @@ from sqlalchemy_utils import get_hybrid_properties
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from dateutil.relativedelta import relativedelta
+import json
 
 
 Base = declarative_base(name="Base")
@@ -119,10 +120,8 @@ class Rankapp(DictSerializableMixin):
         self.appidstring = idstring
 
     def get_ranks(self):
-        test = [x.rank for x in self.searchranks]
-        # test.reverse()
-        return test[::-1]
-
+        test = [{"y": x.rank, "x": x.ranktime.strftime("%d/%m/%Y")} for x in self.searchranks]
+        return json.dumps(test[::-1])
 
     def get_url(self):
         """this will get the url for an app back to the apps playstore"""
