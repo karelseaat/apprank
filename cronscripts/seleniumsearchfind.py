@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
+#the two lines bellow, hate it !
 import sys
-sys.path.append('..')
+import os
+dirname = "/".join(os.path.realpath(__file__).split('/')[:-1])
+
+sys.path.append(dirname + '/..')
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options

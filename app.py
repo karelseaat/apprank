@@ -352,7 +352,7 @@ def processadd():
         app.session.close()
         app.pyn.close()
 
-        flash(str("Added search keys in the database come back in a week to see the rank results"), 'has-text-danger')
+        flash(str("Added search keys in the database come back in a week to see the rank results"), 'has-text-primary')
         return redirect('/all_keywords')
 
     app.session.close()
