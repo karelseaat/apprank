@@ -121,6 +121,7 @@ class Rankapp(DictSerializableMixin):
     def get_ranks(self):
         test = [x.rank for x in self.searchranks]
         # test.reverse()
+        # return test
         return test[::-1]
 
 
