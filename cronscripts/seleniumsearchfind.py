@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+#the two lines bellow, hate it !
 import sys
 import os
 dirname = "/".join(os.path.realpath(__file__).split('/')[:-1])
@@ -29,28 +30,36 @@ geckodriver_autoinstaller.install()
 
 def get_apps(searchkey):
 
-    books = driver.find_element_by_class_name("Ktdaqe").find_elements_by_tag_name('c-wiz')
+    try:
+        books = driver.find_element_by_class_name("Ktdaqe")
+        cwisses = books.find_elements_by_tag_name('c-wiz')
+    except Exception as e:
+        cwisses = []
+        print(f"No results in search: {searchkey.searchsentence}")
 
-    for book in books:
 
-        ass = book.find_elements_by_tag_name('a')
+    for cwsis in cwisses:
+
+        ass = cwsis.find_elements_by_tag_name('a')
         if len(ass) >= 4:
 
             idstring = ass[0].get_attribute('href').split("=")[1]
             rankapp = session.query(Rankapp).filter(idstring==Rankapp.appidstring).first()
-            if not rankapp:
+            if not rankapp or searchkey not in rankapp.searchkeys:
+
                 rankapp = Rankapp(ass[2].find_elements_by_tag_name('div')[0].get_attribute('innerHTML'), idstring)
-                rankapp.imageurl = book.find_elements_by_tag_name('img')[2].get_attribute('src')
+                rankapp.imageurl = cwsis.find_elements_by_tag_name('img')[2].get_attribute('src')
 
             searchrank= SearchRank()
-            searchrank.rank = books.index(book) + 1
+            searchrank.rank = cwisses.index(cwsis) + 1
             if searchrank.rank <= 50:
                 rankapp.searchranks.append(searchrank)
                 rankapp.searchkeys.append(searchkey)
-                print(f"adding {rankapp.name} to db.")
+                print(f"adding {rankapp.name} to db. Search word: {searchkey.searchsentence}".encode('utf-8'))
                 session.add(rankapp)
 
     session.commit()
+
 
 
 
@@ -81,8 +90,11 @@ for result in results:
             break
         last_height = new_height
 
+
     get_apps(result)
 
+
+    # session.close()
     driver.quit()
 
 display.stop()

@@ -92,7 +92,8 @@ def local_breakdown(local):
 def convertToColor(s):
     value = str(s.encode().hex()[-6:])
     klont = Color(f"#{value}")
-    klont.saturation = 0.6
+
+    klont.saturation=0.9
 
     return klont.hex
 
@@ -152,7 +153,6 @@ def extrapagina(result, itemnum):
     if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
         pagenum = int(request.args.get('pagenum'))
 
-
     total = result.count()
 
     app.data['total'] = list(range(1, round_up(total/itemnum)+1))
@@ -195,7 +195,6 @@ def before_request_func():
     }
 
     app.data['currentnavigation'] = request.full_path[1:-1]
-
 
     if current_user.is_authenticated:
         app.data['user'] = {
@@ -254,8 +253,8 @@ def developlogin():
     return redirect("/")
 
 
-
 @app.route('/authorize')
+@dont_cache()
 def authorize():
     """part of the google oauth login"""
     google_auth = oauth.create_client('google')
@@ -289,9 +288,9 @@ def authorize():
 
     app.session.close()
     if 'redirect' in browsersession:
-        return redirect(browsersession['redirect'])
+        return redirect(browsersession['redirect'], 303)
     else:
-        return redirect("/")
+        return redirect("/", 303)
 
 @app.route('/')
 @cache_for(hours=12)
@@ -335,7 +334,6 @@ def logout():
 def processadd():
     """This will process the post of a form to add a trade"""
 
-
     searchkeys = request.form.get('searchkeys')
 
     if not searchkeys:
@@ -346,18 +344,16 @@ def processadd():
 
     results = app.session.query(Searchkey).filter(Searchkey.searchsentence == searchkeys).all()
 
-
     if not results:
         searchkey = Searchkey()
-        searchkey.searchsentence = searchkeys.lower()
+        searchkey.searchsentence = searchkeys.lower().strip()
         app.session.add(searchkey)
         app.session.commit()
         app.session.close()
         app.pyn.close()
 
-        flash(str("Added search keys in the database come back in a week to see the rank results"), 'has-text-danger')
+        flash(str("Added search keys in the database come back in a week to see the rank results"), 'has-text-primary')
         return redirect('/all_keywords')
-
 
     app.session.close()
     app.pyn.close()
@@ -367,8 +363,6 @@ def processadd():
 @app.route("/add")
 @login_required
 def add_it():
-
-
     result = render_template('add.html', data=app.data)
     app.session.close()
     app.pyn.close()
@@ -379,12 +373,11 @@ def add_it():
 def rankapp(searchkey):
     """ dit gaat veel dingen doen, het laten zien van de grafieken, ook displayen van de zoek bar het gaat ook een zoekterm opslaan als je een nieuwe invoert"""
 
-
     searchkey = searchkey.strip().lower()
     app.data['pagename'] = 'Playstore rank history'
 
-    results = app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.searchsentence == searchkey).order_by(SearchRank.ranktime, SearchRank.rank).all()
 
+    results = extrapagina(app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.searchsentence == searchkey).order_by(SearchRank.ranktime, SearchRank.rank), 10).all()
 
     if results:
         labels = results[0].first_rank_plus_twelfe()
@@ -394,9 +387,11 @@ def rankapp(searchkey):
     app.data['searchkey'] = searchkey
     app.data['labels'] = labels
     if results:
-        app.data['data'] = [{'stuff': x.get_ranks(),'name': x.name, 'color': convertToColor(x.name)} for x in results]
+        app.data['data'] = [{"stuff": x.get_ranks(),"name": x.name, "color": convertToColor(x.name)} for x in results]
     else:
         app.data['data'] = []
+
+    print(app.data['data'])
 
     result = render_template('rankapp.html', data=app.data)
     app.session.close()
@@ -422,7 +417,6 @@ def processcontact():
 
     message = request.form.get('message')
     subject = request.form.get('subject')
-
 
     if not message:
         flash("no message?!", 'has-text-danger')
