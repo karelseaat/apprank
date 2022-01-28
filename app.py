@@ -153,7 +153,8 @@ def extrapagina(result, itemnum):
     if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
         pagenum = int(request.args.get('pagenum'))
 
-    total = result.count()
+
+    total = len(result.all())
 
     app.data['total'] = list(range(1, round_up(total/itemnum)+1))
     app.data['pagenum'] = pagenum+1, round_up(total/itemnum)
@@ -302,9 +303,16 @@ def index():
     app.pyn.close()
     return result
 
+
 @app.route("/all_keywords")
 def all_keywords():
-    results = app.session.query(Searchkey).all()
+
+
+    if 'searchkey' in request.args and request.args['searchkey']:
+        searchkey = request.args['searchkey']
+        results = app.session.query(Searchkey).filter(Searchkey.searchsentence.like(f"%{searchkey}%")).all()
+    else:
+        results = app.session.query(Searchkey).all()
 
     app.data['data'] = results
     app.data['pagename'] = 'All keywords'
@@ -376,8 +384,9 @@ def rankapp(searchkey):
     searchkey = searchkey.strip().lower()
     app.data['pagename'] = 'Playstore rank history'
 
-
     results = extrapagina(app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.searchsentence == searchkey).order_by(SearchRank.ranktime, SearchRank.rank), 10).all()
+    # results = app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.searchsentence == searchkey).order_by(SearchRank.ranktime, SearchRank.rank).all()
+
 
     if results:
         labels = results[0].first_rank_plus_twelfe()
@@ -391,7 +400,6 @@ def rankapp(searchkey):
     else:
         app.data['data'] = []
 
-    print(app.data['data'])
 
     result = render_template('rankapp.html', data=app.data)
     app.session.close()

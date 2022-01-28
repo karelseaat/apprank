@@ -1,7 +1,33 @@
-{% from "macros.html" import build_add_button, build_table, build_card_header, build_app_table, build_simple_app_table %}
+{% from "macros.html" import build_reset_button, build_search_button, build_add_button, build_table, build_card_header, build_app_table, build_simple_app_table, build_app_add_join, build_form_submit %}
 
 {% extends "base.html" %}
 {% block content %}
+
+<section class="section is-main-section">
+  <div class="card">
+    <div class="card-content">
+      <div class="card-content">
+        <form method="get" action="/all_keywords" id="demo-form">
+          <div class="field-body">
+            <div class="field">
+
+                <input class="input" type="text" name="searchkey" placeholder="{{ trans('Your search key', self) }}">
+              </div>
+            </div>
+        </form>
+      </div>
+
+    </div>
+    <div class="notification">
+      <div class="level">
+        {{ build_search_button(data, 'all_keywords', 'trades') }}
+        {{ build_reset_button(data, 'all_keywords', 'meh') }}
+      </div>
+    </div>
+  </div>
+
+</section>
+
 <section class="section is-main-section">
   <div class="card has-table">
     {{ build_card_header('All keywords', 'mdi-magnify') }}
@@ -17,6 +43,8 @@
         </div>
       </div>
     </div>
+
+
   </div>
 </section>
 

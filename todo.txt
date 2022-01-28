@@ -33,5 +33,9 @@
 1 selenium script aapassen dat een app en een search word gekoppeld zijn zodat dezelfde apps onder verschillende searchwords kunnen. (done)
 2 text foutcontrole (done)
 3 remove whitespace from seart form (done)
-4 graph search <--
-5 graph all off all on
+4 graph search (done)
+5 graph all off all on (done)
+
+# additional pilons
+1 search op keywords
+2 pagination on keywords

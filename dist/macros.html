@@ -59,6 +59,25 @@
 
 {% endmacro %}
 
+{% macro build_search_button(data, navigate ,redirectto) %}
+
+<button class="button is-medium is-primary" type="submit" form="demo-form">
+  <span>{{ trans("Search", self) }}</span>
+  <span class="icon"><i class="mdi mdi-magnify"></i></span>
+</button>
+
+{% endmacro %}
+
+{% macro build_reset_button(data, navigate ,redirectto) %}
+
+<button class="button is-medium is-primary" type="button" onclick="window.location.href='/{{ navigate }}'">
+  <span>{{ trans("Reset", self) }}</span>
+  <span class="icon"><i class="mdi mdi-magnify"></i></span>
+</button>
+
+{% endmacro %}
+
+
 {% macro build_review_table(data) %}
 <table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
   <thead>
@@ -122,7 +141,7 @@
     <tr>
       <th>{{ trans("Keyword", self) }}</th>
 
-      <th>{{ trans("First search age", self) }}</th>
+      <th>{{ trans("Age in weeks", self) }}</th>
 
 
       <th></th>
@@ -384,6 +403,8 @@
 <div class="is-hidden" id="labels-num-data">{{ data.labels }}</div>
 {% endmacro %}
 
+
+
 {% macro build_app_add_join(current_user) %}
 <div class="field is-horizontal">
   <div class="field-label is-normal">
@@ -396,7 +417,6 @@
       </div>
     </div>
   </div>
-</div>
 {% endmacro %}
 
 {% macro build_href_field(label, content, href) %}
