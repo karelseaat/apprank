@@ -42,7 +42,7 @@ class User(DictSerializableMixin):
     fullname = Column(String(64))
     picture = Column(String(256))
     email = Column(String(256))
-    locale = Column(String(3))
+    locale = Column(String(3), nullable=True)
     googleid = Column(String(256), nullable=False)
 
     searchkeys = relationship(
