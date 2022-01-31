@@ -381,22 +381,21 @@ def add_it():
     app.pyn.close()
     return result
 
-@app.route("/rankapp/<searchkey>")
+@app.route("/rankapp/<id>")
 @dont_cache()
-def rankapp(searchkey):
+def rankapp(id):
     """ dit gaat veel dingen doen, het laten zien van de grafieken, ook displayen van de zoek bar het gaat ook een zoekterm opslaan als je een nieuwe invoert"""
 
-    searchkey = searchkey.strip().lower()
     app.data['pagename'] = 'Playstore rank history'
 
-    results = extrapagina(app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.searchsentence == searchkey).order_by(SearchRank.ranktime, SearchRank.rank), 10).all()
-    
+    results = extrapagina(app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.id == id).order_by(SearchRank.ranktime, SearchRank.rank), 10).all()
+
     if results:
         labels = results[0].first_rank_plus_twelfe()
     else:
         labels = []
 
-    app.data['searchkey'] = searchkey
+
     app.data['labels'] = labels
     if results:
         app.data['data'] = [{"stuff": x.get_ranks(),"name": x.name, "color": convertToColor(x.name)} for x in results]
