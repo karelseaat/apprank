@@ -1,4 +1,4 @@
-{% from "macros.html" import  build_card_header, build_form_submit, build_app_add_join %}
+{% from "macros.html" import  build_card_header, build_form_submit, build_app_add_join, build_country %}
 
 {% extends "base.html" %}
 {% block content %}
@@ -8,6 +8,7 @@
     {{ build_card_header('Forms','mdi-ballot') }}
     <div class="card-content">
       <form method="post" action="/processadd" id="demo-form">
+        {{ build_country(data) }}
         <hr>
         {{ build_app_add_join(current_user) }}
         <hr>

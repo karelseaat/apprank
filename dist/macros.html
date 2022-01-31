@@ -143,7 +143,7 @@
 
       <th>{{ trans("Age in weeks", self) }}</th>
 
-
+      <th>{{ trans("Search locale", self) }}</th>
       <th></th>
     </tr>
   </thead>
@@ -153,6 +153,7 @@
 
       <td>{{ my_item.searchsentence }}</td>
       <td>{{ my_item.get_first_age() }}</td>
+      <td>{{ my_item.locale }}</td>
       <td class="is-actions-cell">
         <div class="buttons is-right">
           <button class="button is-small is-primary" type="button" onclick="window.location.href='/rankapp/{{ my_item.searchsentence }}';">
@@ -414,6 +415,29 @@
     <div class="field">
 
         <input class="input" type="text" name="searchkeys" placeholder="{{ trans('Your search keys', self) }}">
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro build_country(data) %}
+<div class="field is-horizontal">
+  <div class="field-label is-normal">
+    <label class="label">{{ trans("Search locale", self) }}:</label>
+  </div>
+  <div class="field-body">
+    <div class="field">
+
+      <select name="locale" class="input select">
+        {% for key, val in data.countrys.items() %}
+          {% if data.user.language and key == data.user.language.upper() %}
+          <option selected value="{{ key }}">{{ val }}</option>
+          {% else %}
+          <option value="{{ key }}">{{ val }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+
       </div>
     </div>
   </div>
