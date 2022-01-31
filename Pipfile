@@ -22,6 +22,7 @@ paste = "*"
 cerberus = "*"
 flask-mail = "*"
 geckodriver-autoinstaller = "*"
+alembic = "*"
 
 [dev-packages]
 
