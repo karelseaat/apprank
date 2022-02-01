@@ -6,10 +6,9 @@ from sqlalchemy import pool
 from alembic import context
 from models import Base
 from models import User, SearchRank, Rankapp, Searchkey
-from config import CONNECTIONURI
+from config import CONNECTIONURI, make_session
 from sqlalchemy import create_engine
-from config import make_session
-
+import os
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -75,7 +74,12 @@ def run_migrations_online():
         with context.begin_transaction():
             context.run_migrations()
 
-session = make_session()
+if CONNECTIONURI and 'sqlite:///' in CONNECTIONURI:
+    realpath = "/"+"/".join(CONNECTIONURI.split('/')[5:])
+    if not os.path.exists(realpath):
+        print("db doesnt exist yet so there is nothing to update")
+        quit()
+
 
 if context.is_offline_mode():
     run_migrations_offline()

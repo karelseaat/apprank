@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models import Base
 import os
-from config import make_session
+# from config import make_session
 
 REVIEWLIMIT = 1000
 
