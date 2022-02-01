@@ -73,6 +73,9 @@ results = session.query(Searchkey).all()
 
 for result in results:
     driver = webdriver.Firefox(options=options)
+    if not result.locale:
+        result.locale = 'us'
+
     driver.get(f'https://play.google.com/store/search?q={result.searchsentence}&c=apps&gl={result.locale}')
     last_height = driver.execute_script("return document.body.scrollHeight")
 

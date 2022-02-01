@@ -131,7 +131,7 @@ class Searchkey(DictSerializableMixin):
     __tablename__ = 'searchkey'
     id = Column(Integer, primary_key=True)
     searchsentence = Column(String(256), nullable=False)
-    locale = Column(String(3), nullable=False)
+    locale = Column(String(3), nullable=True)
     rankapps = relationship(
         "Rankapp",
         secondary=search_app_association,
