@@ -8,6 +8,8 @@ from models import Base
 from models import User, SearchRank, Rankapp, Searchkey
 from config import CONNECTIONURI
 from sqlalchemy import create_engine
+from config import make_session
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -73,6 +75,7 @@ def run_migrations_online():
         with context.begin_transaction():
             context.run_migrations()
 
+session = make_session()
 
 if context.is_offline_mode():
     run_migrations_offline()
