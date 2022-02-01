@@ -12,7 +12,7 @@ from flask import (
     flash, Response,
     session as browsersession
 )
-# /home/karelseaat/.local/share/virtualenvs/apprank-y-Opkb_k/bin/python /home/karelseaat/apprank/cronscripts/seleniumsearchfind.py
+
 from cerberus import Validator
 from flask_mail import Mail, Message
 
@@ -252,7 +252,7 @@ def developlogin():
         app.session.close()
         app.pyn.close()
 
-    return redirect("/")
+    return redirect("/", 303)
 
 
 @app.route('/authorize')
