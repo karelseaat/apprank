@@ -30,9 +30,9 @@
       <div class="buttons has-addons">
         {% for page in data.total %}
         {% if data.pagenum %}
-        <button type="button" class="button {{ 'is-active' if page == data.pagenum[0] }}" onclick="window.location.href='/{{ pagename }}/{{ data.searchkey }}?pagenum={{ page -1}}';">{{ page }}</button>
+        <button type="button" class="button {{ 'is-active' if page == data.pagenum[0] }}" onclick="window.location.href='/{{ pagename }}/{{ data.searchkeyid }}?pagenum={{ page -1}}';">{{ page }}</button>
         {% else %}
-        <button type="button" class="button {{ 'is-active' if page == 1 }}" onclick="window.location.href='/{{ pagename }}/{{ data.searchkey }}?pagenum={{ page -1}}';">{{ page }}</button>
+        <button type="button" class="button {{ 'is-active' if page == 1 }}" onclick="window.location.href='/{{ pagename }}/{{ data.searchkeyid }}';">{{ page }}</button>
         {% endif %}
         {% endfor %}
       </div>
@@ -368,6 +368,7 @@
     "data":  {{ my_item['stuff'] }},
     "pointBorderWidth": 1,
     "pointHoverRadius": 7,
+    "appid": "{{ my_item['id'] }}",
     "pointHoverBorderWidth": 2,
     "pointRadius": 7
   }

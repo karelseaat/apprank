@@ -135,7 +135,6 @@ def nongetpagination(db_object, itemnum):
     if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
         pagenum = int(request.args.get('pagenum'))
 
-
     total = app.session.query(db_object).count()
     app.data['total'] = list(range(1, round_up(total/itemnum)+1))
     app.data['pagenum'] = pagenum+1, round_up(total/itemnum)
@@ -152,7 +151,6 @@ def extrapagina(result, itemnum):
 
     if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
         pagenum = int(request.args.get('pagenum'))
-
 
     total = len(result.all())
 
@@ -388,7 +386,8 @@ def rankapp(id):
 
     app.data['pagename'] = 'Playstore rank history'
 
-    results = extrapagina(app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.id == id).order_by(SearchRank.ranktime, SearchRank.rank), 10).all()
+    app.data['searchkeyid'] = id
+    results = extrapagina(app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.id == id).order_by(SearchRank.ranktime, desc(SearchRank.rank)), 10).all()
 
     if results:
         labels = results[0].first_rank_plus_twelfe()
@@ -398,7 +397,7 @@ def rankapp(id):
 
     app.data['labels'] = labels
     if results:
-        app.data['data'] = [{"stuff": x.get_ranks(),"name": x.name, "color": convertToColor(x.name)} for x in results]
+        app.data['data'] = [{"stuff": x.get_ranks(),"name": x.name, "color": convertToColor(x.name), "id": x.id} for x in results]
     else:
         app.data['data'] = []
 

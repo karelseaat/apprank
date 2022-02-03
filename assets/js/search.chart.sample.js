@@ -19,15 +19,35 @@ var chartColors = {
 };
 
 // console.log(document.getElementById('apps').innerHTML)
+var canvas = document.getElementById('big-line-chart')
 
-var ctx = document.getElementById('big-line-chart').getContext('2d');
+var data_array = JSON.parse(document.getElementById('apps').innerHTML)
+
+var allvalues = [];
+for(var key in data_array) {
+    // allvalues.push(data_array[key])
+    for(var thekey in data_array[key]['data']) {
+      if (data_array[key]['data'][thekey]['y'] !== "null")
+      {
+        allvalues.push(data_array[key]['data'][thekey]['y'])
+      }
+
+    }
+}
+
+// console.log(allvalues)
+
+// console.log(Math.min.apply(this, data_array))
+
+var ctx = canvas.getContext('2d');
 var newchart = new Chart(ctx, {
   type: 'line',
   data: {
-    datasets: JSON.parse(document.getElementById('apps').innerHTML),
+    datasets: data_array,
     labels: JSON.parse(document.getElementById('labels').innerHTML)
   },
   options: {
+
     maintainAspectRatio: false,
     legend: {
       display: true
@@ -57,9 +77,12 @@ var newchart = new Chart(ctx, {
           zeroLineColor: 'transparent'
         },
         ticks: {
+          beginAtZero: true,
           reverse: true,
           padding: 20,
-          fontColor: '#9a9a9a'
+          fontColor: '#9a9a9a',
+          min: Math.min.apply(this, allvalues) - 2,
+          max: Math.max.apply(this, allvalues) + 2
         }
       }],
       xAxes: [{
@@ -81,3 +104,9 @@ var newchart = new Chart(ctx, {
     }
   }
 });
+
+canvas.onclick = function(evt) {
+    var activePoints = newchart.getElementsAtEvent(evt);
+    console.log(activePoints)
+    // => activePoints is an array of points on the canvas that are at the same position as the click event.
+};

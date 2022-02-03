@@ -7,6 +7,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from dateutil.relativedelta import relativedelta
 import json
+from pprint import pprint
 
 
 Base = declarative_base(name="Base")
@@ -103,10 +104,13 @@ class Rankapp(DictSerializableMixin):
     )
 
     def first_rank_plus_twelfe(self):
+
         if self.searchranks:
-            return [(self.searchranks[0].ranktime - relativedelta(weeks=i)).strftime("%d/%m/%Y") for i in range(52)]
+            results =  [(self.searchranks[0].ranktime - relativedelta(weeks=i-1)) for i in range(52)]
         else:
-            [(datetime.datetime.now() - relativedelta(weeks=i)).strftime("%d/%m/%Y") for i in range(52)]
+            results = [(datetime.datetime.now() - relativedelta(weeks=i)) for i in range(52)]
+
+        return [x.strftime("%Y/%m/%d") for x in results]
 
     def get_first_rank(self):
         ranks = self.searchranks
@@ -120,8 +124,18 @@ class Rankapp(DictSerializableMixin):
         self.appidstring = idstring
 
     def get_ranks(self):
-        test = [{"y": x.rank, "x": f'new Date({x.ranktime.strftime("%Y/%m/%d")})'} for x in self.searchranks]
-        return json.dumps(test[::-1])
+
+        klont = {f'{x}':{"y": "null", "x": f'new Date({x})'} for x in self.first_rank_plus_twelfe()}
+
+        test = {f'{x.ranktime.strftime("%Y/%m/%d")}':{"y": x.rank, "x": f'new Date({x.ranktime.strftime("%Y/%m/%d")})'} for x in self.searchranks}
+
+        temp = {**klont, **test}
+
+        test = list(temp.values())
+
+
+        # test = [{"y": x.rank, "x": f'new Date({x.ranktime.strftime("%Y/%m/%d")})'} for x in self.searchranks]
+        return json.dumps(test)
 
     def get_url(self):
         """this will get the url for an app back to the apps playstore"""

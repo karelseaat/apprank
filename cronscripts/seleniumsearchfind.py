@@ -37,7 +37,6 @@ def get_apps(searchkey):
         cwisses = []
         print(f"No results in search: {searchkey.searchsentence}")
 
-
     for cwsis in cwisses:
 
         ass = cwsis.find_elements_by_tag_name('a')
@@ -92,9 +91,7 @@ for result in results:
             break
         last_height = new_height
 
-
     get_apps(result)
-
 
     # session.close()
     driver.quit()
