@@ -365,10 +365,11 @@ def processadd():
         flash(str("Added search keys in the database come back in a week to see the rank results"), 'has-text-primary')
         return redirect('/all_keywords')
 
+    searchkeyid = searchkey.id
     app.session.close()
     app.pyn.close()
 
-    return redirect(f'/rankapp/{searchkeys}')
+    return redirect(f'/rankapp/{searchkeyid}')
 
 @app.route("/add")
 @login_required
@@ -389,6 +390,13 @@ def rankapp(id):
     app.data['searchkeyid'] = id
     results = extrapagina(app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.id == id).order_by(SearchRank.ranktime, desc(SearchRank.rank)), 10).all()
 
+    searchsentresult = app.session.query(Searchkey).filter(Searchkey.id == id).first()
+
+    if searchsentresult:
+        app.data['searchkey'] = app.session.query(Searchkey).filter(Searchkey.id == id).first().searchsentence
+
+    app.data['rawres'] = results
+
     if results:
         labels = results[0].first_rank_plus_twelfe()
     else:
@@ -400,6 +408,7 @@ def rankapp(id):
         app.data['data'] = [{"stuff": x.get_ranks(),"name": x.name, "color": convertToColor(x.name), "id": x.id} for x in results]
     else:
         app.data['data'] = []
+
 
 
     result = render_template('rankapp.html', data=app.data)

@@ -42,7 +42,8 @@ class PyNalator:
                 self.defaulttranscont = toml.loads(cont, _dict=dict)
             except Exception as exception:
                 self.defaulttransfile.close()
-                os.remove(f"./{subdir}/trans-default.toml")
+                # if os.path.exists(f"./{subdir}/trans-default.toml"):
+                #     os.path.remove(f"./{subdir}/trans-default.toml")
                 self.defaulttransfile = None
 
 
@@ -53,7 +54,10 @@ class PyNalator:
         if hash in self.transcont:
             return self.transcont[hash][0]
 
-        self.defaulttranscont.update({str(hash): (word, location._TemplateReference__context.name)})
+        location = location._TemplateReference__context.name.split('/')
+
+
+        self.defaulttranscont.update({str(hash): (word, location)})
 
         return word
 
@@ -63,12 +67,12 @@ class PyNalator:
     def close(self):
         """write all new translations and after that close all files used, it is the end of a translation cycle"""
 
-        if self.transfile:
+        if self.transfile and not self.transfile.closed:
             self.transfile.seek(0, 0)
             self.transfile.write(toml.dumps(self.transcont))
             self.transfile.close()
 
-        if self.defaulttransfile:
+        if self.defaulttransfile and not self.defaulttransfile.closed:
             self.defaulttransfile.seek(0, 0)
             self.defaulttransfile.write(toml.dumps(self.defaulttranscont))
             self.defaulttransfile.close()
