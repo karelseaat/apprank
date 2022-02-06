@@ -37,5 +37,9 @@
 5 graph all off all on (done)
 
 # additional pilons
-1 search op keywords
-2 pagination on keywords
+1 search op keywords (done)
+2 pagination on keywords (done)
+
+# error fix 1
+1 grafiek lijkt omgekeerd ! fix it
+2 na login lijkt het dat je nog niet ingelogt bent !
