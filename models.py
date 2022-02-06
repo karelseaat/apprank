@@ -133,8 +133,6 @@ class Rankapp(DictSerializableMixin):
 
         test = list(temp.values())
 
-
-        # test = [{"y": x.rank, "x": f'new Date({x.ranktime.strftime("%Y/%m/%d")})'} for x in self.searchranks]
         return json.dumps(test)
 
     def get_url(self):
@@ -161,4 +159,7 @@ class Searchkey(DictSerializableMixin):
     def get_first_age(self):
 
         if self.rankapps:
-            return int((datetime.datetime.now() - self.rankapps[0].get_first_rank().ranktime).days / 7)
+            if self.rankapps[0].get_first_rank():
+                return int((datetime.datetime.now() - self.rankapps[0].get_first_rank().ranktime).days / 7)
+            else:
+                return None
