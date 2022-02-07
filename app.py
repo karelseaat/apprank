@@ -388,7 +388,7 @@ def rankapp(id):
     app.data['pagename'] = 'Playstore rank history'
 
     app.data['searchkeyid'] = id
-    results = extrapagina(app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.id == id).order_by(SearchRank.ranktime, desc(SearchRank.rank)), 10).all()
+    results = extrapagina(app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.id == id).order_by(SearchRank.ranktime, SearchRank.rank), 10).all()
 
     searchsentresult = app.session.query(Searchkey).filter(Searchkey.id == id).first()
 
