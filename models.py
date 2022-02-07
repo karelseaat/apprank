@@ -112,6 +112,14 @@ class Rankapp(DictSerializableMixin):
 
         return [x.strftime("%Y/%m/%d") for x in results]
 
+    def get_last_rank(self):
+        ranks = self.searchranks
+        if ranks:
+
+            return ranks[0]
+        else:
+            return []
+
     def get_first_rank(self):
         ranks = self.searchranks
         if ranks:
@@ -163,7 +171,7 @@ class Searchkey(DictSerializableMixin):
     def get_first_age(self):
 
         if self.rankapps:
-            if self.rankapps[0].get_first_rank():
-                return int((datetime.datetime.now() - self.rankapps[0].get_first_rank().ranktime).days / 7)
+            if self.rankapps[0].get_last_rank():
+                return int((datetime.datetime.now() - self.rankapps[0].get_last_rank().ranktime).days / 7)
             else:
                 return None
