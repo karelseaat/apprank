@@ -293,7 +293,7 @@ def authorize():
         return redirect("/", 303)
 
 @app.route('/')
-@cache_for(hours=12)
+@dont_cache()
 def index():
 
     app.data['pagename'] = 'App Rank'
@@ -393,7 +393,7 @@ def rankapp(id):
     searchsentresult = app.session.query(Searchkey).filter(Searchkey.id == id).first()
 
     if searchsentresult:
-        app.data['searchkey'] = app.session.query(Searchkey).filter(Searchkey.id == id).first().searchsentence
+        app.data['searchkey'] = searchsentresult.searchsentence
 
     app.data['rawres'] = results
 
@@ -408,8 +408,6 @@ def rankapp(id):
         app.data['data'] = [{"stuff": x.get_ranks(),"name": x.name, "color": convertToColor(x.name), "id": x.id} for x in results]
     else:
         app.data['data'] = []
-
-
 
     result = render_template('rankapp.html', data=app.data)
     app.session.close()

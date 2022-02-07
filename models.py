@@ -100,7 +100,7 @@ class Rankapp(DictSerializableMixin):
 
     searchranks = relationship(
         "SearchRank",
-        back_populates="rankapp"
+        back_populates="rankapp",
     )
 
     def first_rank_plus_twelfe(self):
@@ -115,7 +115,11 @@ class Rankapp(DictSerializableMixin):
     def get_first_rank(self):
         ranks = self.searchranks
         if ranks:
-            return ranks[0]
+            firstrank = ranks[-1]
+            if (datetime.datetime.now() - firstrank.ranktime).days > 7:
+                return []
+
+            return ranks[-1]
         else:
             return []
 
