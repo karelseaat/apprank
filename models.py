@@ -90,6 +90,9 @@ class Rankapp(DictSerializableMixin):
     name = Column(String(64), nullable=False)
     appidstring = Column(String(64), nullable=False)
     imageurl = Column(String(256))
+    installs = Column(Integer, default=0)
+    ratings = Column(Integer, default=0)
+    installsize = Column(Integer, default=0)
 
     paid = Column(Boolean, default=False)
     searchkeys = relationship(
@@ -106,7 +109,7 @@ class Rankapp(DictSerializableMixin):
     def first_rank_plus_twelfe(self):
 
         if self.searchranks:
-            results =  [(self.searchranks[0].ranktime - relativedelta(weeks=i-1)) for i in range(52)]
+            results =  [(self.searchranks[-1].ranktime - relativedelta(weeks=i)) for i in range(52)]
         else:
             results = [(datetime.datetime.now() - relativedelta(weeks=i)) for i in range(52)]
 

@@ -302,6 +302,28 @@ def index():
     app.pyn.close()
     return result
 
+def average(lst):
+    return round(sum(lst) / len(lst))
+
+@app.route("/keyword_details/<id>")
+@dont_cache()
+def keyword_details(id):
+
+    searchsentresult = app.session.query(Searchkey).filter(Searchkey.id == id).first()
+
+    installs = [x.installs for x in searchsentresult.rankapps]
+    ratings = [x.ratings for x in searchsentresult.rankapps]
+    sises = [x.installsize for x in searchsentresult.rankapps if x.installsize >= 0]
+
+    app.data['pagename'] = searchsentresult.searchsentence
+    app.data['installs'] = {'max': max(installs), 'min': min(installs), 'avg': average(installs)}
+    app.data['ratings'] = {'max': max(ratings), 'min': min(ratings), 'avg': average(ratings)}
+    app.data['sises'] = {'max': max(sises), 'min': min(sises), 'avg': average(sises)}
+
+    result = render_template('keywordetails.html', data=app.data)
+    app.session.close()
+    app.pyn.close()
+    return result
 
 @app.route("/all_keywords")
 def all_keywords():
