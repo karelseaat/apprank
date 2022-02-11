@@ -43,3 +43,22 @@
 # error fix 1
 1 grafiek lijkt omgekeerd ! fix it
 2 na login lijkt het dat je nog niet ingelogt bent !
+
+# extra info
+1 app info
+1.1 woord lengte per app texten
+1.2 avg review length
+1.3 max review length
+1.4 developer website
+developer address
+adds
+inapppurchases
+movie
+
+2 keyword info
+bijhouden van versies ?
+gemiddelde woord lengte ! per app text
+average review text length
+num of app with moview per x nr of apps
+num of adds per nr of apps
+num of in app purchases per x num of apps
