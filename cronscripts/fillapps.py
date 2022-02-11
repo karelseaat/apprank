@@ -56,7 +56,6 @@ def add_to_apps(apps):
         appresults = dbsession.query(Rankapp).filter(Rankapp.appidstring == aapp['appId']).all()
 
         for result in appresults:
-            # print(aapp)
             result.paid = not aapp['free']
             result.installs = noretozero(aapp['minInstalls'])
             result.ratings = noretozero(aapp['ratings'])

@@ -305,6 +305,16 @@ def index():
 def average(lst):
     return round(sum(lst) / len(lst))
 
+
+@app.route("/app_details/<id>")
+@dont_cache()
+def app_details(id):
+
+    result = render_template('appdetails.html', data=app.data)
+    app.session.close()
+    app.pyn.close()
+    return result
+
 @app.route("/keyword_details/<id>")
 @dont_cache()
 def keyword_details(id):
