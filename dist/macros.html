@@ -102,14 +102,12 @@
 
       <td>{{ my_item.name }}</td>
 
-
-
       <td>{{ my_item.get_first_rank().rank }}</td>
 
 
       <td class="is-actions-cell">
         <div class="buttons is-right">
-          <button class="button  is-small is-primary" type="button" onclick="window.location.href='{{ my_item.get_url() }}';">
+          <button class="button  is-small is-primary" type="button" onclick="window.location.href='/app_details/{{ my_item.id }}';">
             <span class="icon"><i class="mdi mdi-android"></i></span>
           </button>
       </td>
@@ -128,7 +126,8 @@
       <th>{{ trans("Age in weeks", self) }}</th>
 
       <th>{{ trans("Search locale", self) }}</th>
-      <th></th>
+      <th>{{ trans("Details", self) }}</th>
+      <th>{{ trans("App graph", self) }}</th>
     </tr>
   </thead>
   <tbody>
@@ -139,9 +138,16 @@
       <td>{{ my_item.get_first_age() }}</td>
       <td>{{ my_item.locale }}</td>
        <td class="is-actions-cell">
-         <div class="buttons is-right">
-          <button class="button is-small is-primary" type="button" onclick="window.location.href='/rankapp/{{ my_item.id }}';">
+         <div class="buttons ">
+          <button class="button is-small is-primary" type="button" onclick="window.location.href='/keyword_details/{{ my_item.id }}';">
             <span class="icon"><i class="mdi mdi-magnify"></i></span>
+
+           </button>
+       </td>
+       <td class="is-actions-cell">
+         <div class="buttons">
+          <button class="button is-small is-primary" type="button" onclick="window.location.href='/rankapp/{{ my_item.id }}';">
+            <span class="icon"><i class="mdi mdi-eye"></i></span>
 
            </button>
        </td>

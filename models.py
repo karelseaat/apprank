@@ -90,6 +90,9 @@ class Rankapp(DictSerializableMixin):
     name = Column(String(64), nullable=False)
     appidstring = Column(String(64), nullable=False)
     imageurl = Column(String(256))
+    installs = Column(Integer, default=0)
+    ratings = Column(Integer, default=0)
+    installsize = Column(Integer, default=0)
 
     paid = Column(Boolean, default=False)
     searchkeys = relationship(
@@ -100,22 +103,34 @@ class Rankapp(DictSerializableMixin):
 
     searchranks = relationship(
         "SearchRank",
-        back_populates="rankapp"
+        back_populates="rankapp",
     )
 
     def first_rank_plus_twelfe(self):
 
         if self.searchranks:
-            results =  [(self.searchranks[0].ranktime - relativedelta(weeks=i-1)) for i in range(52)]
+            results =  [(self.searchranks[-1].ranktime - relativedelta(weeks=i)) for i in range(52)]
         else:
             results = [(datetime.datetime.now() - relativedelta(weeks=i)) for i in range(52)]
 
         return [x.strftime("%Y/%m/%d") for x in results]
 
+    def get_last_rank(self):
+        ranks = self.searchranks
+        if ranks:
+
+            return ranks[0]
+        else:
+            return []
+
     def get_first_rank(self):
         ranks = self.searchranks
         if ranks:
-            return ranks[0]
+            firstrank = ranks[-1]
+            if (datetime.datetime.now() - firstrank.ranktime).days > 7:
+                return []
+
+            return ranks[-1]
         else:
             return []
 
@@ -159,7 +174,7 @@ class Searchkey(DictSerializableMixin):
     def get_first_age(self):
 
         if self.rankapps:
-            if self.rankapps[0].get_first_rank():
-                return int((datetime.datetime.now() - self.rankapps[0].get_first_rank().ranktime).days / 7)
+            if self.rankapps[0].get_last_rank():
+                return int((datetime.datetime.now() - self.rankapps[0].get_last_rank().ranktime).days / 7)
             else:
                 return None

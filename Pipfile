@@ -23,6 +23,7 @@ cerberus = "*"
 flask-mail = "*"
 geckodriver-autoinstaller = "*"
 alembic = "*"
+google-play-scraper = "*"
 
 [dev-packages]
 

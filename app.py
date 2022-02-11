@@ -293,7 +293,7 @@ def authorize():
         return redirect("/", 303)
 
 @app.route('/')
-@cache_for(hours=12)
+@dont_cache()
 def index():
 
     app.data['pagename'] = 'App Rank'
@@ -302,6 +302,38 @@ def index():
     app.pyn.close()
     return result
 
+def average(lst):
+    return round(sum(lst) / len(lst))
+
+
+@app.route("/app_details/<id>")
+@dont_cache()
+def app_details(id):
+
+    result = render_template('appdetails.html', data=app.data)
+    app.session.close()
+    app.pyn.close()
+    return result
+
+@app.route("/keyword_details/<id>")
+@dont_cache()
+def keyword_details(id):
+
+    searchsentresult = app.session.query(Searchkey).filter(Searchkey.id == id).first()
+
+    installs = [x.installs for x in searchsentresult.rankapps]
+    ratings = [x.ratings for x in searchsentresult.rankapps]
+    sises = [x.installsize for x in searchsentresult.rankapps if x.installsize >= 0]
+
+    app.data['pagename'] = searchsentresult.searchsentence
+    app.data['installs'] = {'max': max(installs), 'min': min(installs), 'avg': average(installs)}
+    app.data['ratings'] = {'max': max(ratings), 'min': min(ratings), 'avg': average(ratings)}
+    app.data['sises'] = {'max': max(sises), 'min': min(sises), 'avg': average(sises)}
+
+    result = render_template('keywordetails.html', data=app.data)
+    app.session.close()
+    app.pyn.close()
+    return result
 
 @app.route("/all_keywords")
 def all_keywords():
@@ -393,7 +425,7 @@ def rankapp(id):
     searchsentresult = app.session.query(Searchkey).filter(Searchkey.id == id).first()
 
     if searchsentresult:
-        app.data['searchkey'] = app.session.query(Searchkey).filter(Searchkey.id == id).first().searchsentence
+        app.data['searchkey'] = searchsentresult.searchsentence
 
     app.data['rawres'] = results
 
@@ -408,8 +440,6 @@ def rankapp(id):
         app.data['data'] = [{"stuff": x.get_ranks(),"name": x.name, "color": convertToColor(x.name), "id": x.id} for x in results]
     else:
         app.data['data'] = []
-
-
 
     result = render_template('rankapp.html', data=app.data)
     app.session.close()
