@@ -19,7 +19,7 @@ for(var key in data_array) {
 
 var ctx = canvas.getContext('2d');
 var newchart = new Chart(ctx, {
-  type: 'line',
+  type: 'bar',
   data: {
     datasets: data_array,
     labels: JSON.parse(document.getElementById('labels').innerHTML)

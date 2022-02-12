@@ -310,6 +310,8 @@ def average(lst):
 @dont_cache()
 def app_details(id):
 
+    app.data['aapp'] = app.session.query(Rankapp).filter(Rankapp.id == id).first()
+
     result = render_template('appdetails.html', data=app.data)
     app.session.close()
     app.pyn.close()
@@ -324,6 +326,11 @@ def keyword_details(id):
     installs = [x.installs for x in searchsentresult.rankapps]
     ratings = [x.ratings for x in searchsentresult.rankapps]
     sises = [x.installsize for x in searchsentresult.rankapps if x.installsize >= 0]
+
+    print(searchsentresult.get_percent_adds())
+
+    print(searchsentresult.get_percent_labels(10))
+
 
     app.data['pagename'] = searchsentresult.searchsentence
     app.data['installs'] = {'max': max(installs), 'min': min(installs), 'avg': average(installs)}

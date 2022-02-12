@@ -25,7 +25,8 @@ def check_apps():
     for aapp in apps:
         try:
             singleresult = app(aapp[0])
-            # print(singleresult['size'])
+            print(singleresult.keys())
+            print(singleresult['version'])
             appresults.append(singleresult)
         except Exception as e:
             print(e)
@@ -60,6 +61,17 @@ def add_to_apps(apps):
             result.installs = noretozero(aapp['minInstalls'])
             result.ratings = noretozero(aapp['ratings'])
             result.installsize = noretozero(texttomin(aapp['size'].replace("M", "")))
+            result.textlen = len(aapp['description'])
+            result.adds = noretozero(aapp['containsAds'])
+            result.movie = bool(aapp['video'])
+            result.inapppurchases = noretozero(aapp['offersIAP'])
+            result.developerwebsite = noretozero(aapp['developerWebsite'])
+            result.developeraddress = noretozero(aapp['developerAddress'])
+            if result.last_app_version() != aapp['version']:
+                appver = AppVersion()
+                appver.version = aapp['version']
+                result.appversions.append(appver)
+
             dbsession.add(result)
     dbsession.commit()
     dbsession.close()

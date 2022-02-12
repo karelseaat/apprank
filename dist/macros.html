@@ -464,6 +464,14 @@
 </div>
 {% endmacro %}
 
+{% macro build_link_field(label, content, url) %}
+<div class="field">
+  <label class="label">{{ trans(label, self) }}:</label>
+  <div class="control is-clearfix">
+    <a href="{{ url }}">{{ content }}</a>
+  </div>
+</div>
+{% endmacro %}
 
 {% macro build_menu_li(name, href, icon, active) %}
 <li>

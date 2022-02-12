@@ -8,6 +8,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from dateutil.relativedelta import relativedelta
 import json
 from pprint import pprint
+import statistics
 
 
 Base = declarative_base(name="Base")
@@ -84,6 +85,14 @@ class SearchRank(DictSerializableMixin):
     rank = Column(Integer)
     ranktime = Column(DateTime, default=datetime.datetime.utcnow)
 
+class AppVersion(DictSerializableMixin):
+    __tablename__ = 'appversion'
+    id = Column(Integer, primary_key=True)
+    date = Column(DateTime, default=datetime.datetime.utcnow)
+    version = Column(String(32), nullable=False)
+    rankapp = relationship("Rankapp", back_populates="appversions")
+    rankapp_id = Column(ForeignKey('rankingapp.id'))
+
 class Rankapp(DictSerializableMixin):
     __tablename__ = 'rankingapp'
     id = Column(Integer, primary_key=True)
@@ -93,6 +102,12 @@ class Rankapp(DictSerializableMixin):
     installs = Column(Integer, default=0)
     ratings = Column(Integer, default=0)
     installsize = Column(Integer, default=0)
+    textlen = Column(Integer, default=0)
+    adds = Column(Boolean, default=False)
+    movie = Column(Boolean, default=False)
+    inapppurchases = Column(Boolean, default=False)
+    developerwebsite = Column(String(128), default="")
+    developeraddress = Column(String(256), default="")
 
     paid = Column(Boolean, default=False)
     searchkeys = relationship(
@@ -105,6 +120,11 @@ class Rankapp(DictSerializableMixin):
         "SearchRank",
         back_populates="rankapp",
     )
+
+    appversions = relationship("AppVersion", back_populates="rankapp")
+
+    def last_app_version(self):
+        return self.appversions[-1]
 
     def first_rank_plus_twelfe(self):
 
@@ -170,6 +190,52 @@ class Searchkey(DictSerializableMixin):
         secondary=user_search_association,
         back_populates="searchkeys"
     )
+
+    def get_percent_adds(self):
+        temp = []
+        for x in range(10):
+            temp.append(statistics.mean([bool(x.adds) for x in self.get_percentapps(10, x)]))
+        return temp
+
+    def get_percent_movie(self):
+        temp = []
+        for x in range(10):
+            temp.append(statistics.mean([bool(x.movie) for x in self.get_percentapps(10, x)]))
+        return temp
+
+    def get_percent_inapppurchases(self):
+        temp = []
+        for x in range(10):
+            temp.append(statistics.mean([bool(x.inapppurchases) for x in self.get_percentapps(10, x)]))
+        return temp
+
+    def get_percent_textlen(self):
+        temp = []
+        for x in range(10):
+            temp.append(statistics.mean([x.textlen for x in self.get_percentapps(10, x)]))
+        return temp
+
+    def get_percent_installs(self):
+        temp = []
+        for x in range(10):
+            temp.append(statistics.mean([x.installs for x in self.get_percentapps(10, x)]))
+        return temp
+
+    def get_percent_ratings(self):
+        temp = []
+        for x in range(10):
+            temp.append(statistics.mean([x.ratings for x in self.get_percentapps(10, x)]))
+        return temp
+
+    def get_percent_labels(self, percent):
+        return [f"{x*10}-{(x+1)*10}" for x in range(10)]
+
+
+    def get_percentapps(self, percent, index):
+        nrofapps = len(self.rankapps)
+        percentofapps = round((nrofapps / 100) * percent)
+
+        return self.rankapps[percentofapps * index:percentofapps * (index+1)]
 
     def get_first_age(self):
 

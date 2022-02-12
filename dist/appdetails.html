@@ -1,10 +1,36 @@
-{% from "macros.html" import build_reset_button, build_search_button, build_add_button, build_table, build_card_header, build_app_table, build_simple_app_table, build_app_add_join, build_form_submit, build_defautl_field %}
+{% from "macros.html" import build_card_header, build_app_table, build_simple_app_table, build_defautl_field, build_icon_field, build_link_field %}
 
 {% extends "base.html" %}
 {% block content %}
 
 <section class="section is-main-section">
+  <div class="tile is-ancestor">
+    <div class="tile is-parent">
+      <div class="card tile is-child">
+        {{ build_card_header('App info','mdi-android ') }}
+        <div class="card-content">
 
+          {{ build_defautl_field("Name", data.aapp.name) }}
+          {{ build_defautl_field("Id", data.aapp.appidstring) }}
+          {{ build_defautl_field("Installs", data.aapp.installs) }}
+          {{ build_defautl_field("Ratings", data.aapp.ratings) }}
+          {{ build_defautl_field("Install size", data.aapp.installs) }}
+
+          {{ build_icon_field("label", "name", data.aapp.imageurl) }}
+
+          {{ build_link_field("label", data.aapp.appidstring, data.aapp.get_url()) }}
+
+          {{ build_defautl_field("Adds", data.aapp.adds) }}
+          {{ build_defautl_field("Movie", data.aapp.movie) }}
+          {{ build_defautl_field("In app purchases", data.aapp.inapppurchases) }}
+
+          {{ build_defautl_field("developer website", data.aapp.developerwebsite) }}
+          {{ build_defautl_field("developer address", data.aapp.developeraddress) }}
+
+          </div>
+        </div>
+      </div>
+    </div
 </section>
 
 <section class="section">
