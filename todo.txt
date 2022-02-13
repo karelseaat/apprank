@@ -67,8 +67,21 @@ average review text length
 bar grafiek met 10 bars waarbij iedere 10% is van de apps gerekend vanaf de top apps.
 dus van de bijvoorbeeld 10 apps in de 10% hoeveel hebben er adds
 
-hoeveel hebben er videos ?
+hoeveel hebben er videos ? (done)
 
-een bar graph met gemiddelde woorden voor de text !
+een bar graph met gemiddelde woorden voor de text ! (done)
 
-een bar graph etc.
+een bar graph etc. (done)
+
+#clean it up !
+clean up the templates
+clean up the code
+oude files weg
+macros clean
+alles door de validator
+
+next !
+implement bars
+kijken waar die foutmeldingen vandaankomen alles doorklikken
+keywords in de begin texten
+app details finalisen !
