@@ -24,6 +24,8 @@ flask-mail = "*"
 geckodriver-autoinstaller = "*"
 alembic = "*"
 google-play-scraper = "*"
+pycodestyle = "*"
+flake8 = "*"
 
 [dev-packages]
 

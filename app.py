@@ -1,7 +1,5 @@
 import json
-from datetime import timedelta
-import datetime as dt
-import time
+
 import requests
 from flask import (
     Flask,
@@ -9,7 +7,7 @@ from flask import (
     request,
     url_for,
     render_template,
-    flash, Response,
+    flash,
     session as browsersession
 )
 
@@ -26,24 +24,21 @@ from flask_login import (
     LoginManager
 )
 
-from sqlalchemy import asc, desc
-
 import os
 
 from flask_cachecontrol import (FlaskCacheControl, cache_for, dont_cache)
 from config import (
     make_session,
     oauthconfig,
-    REVIEWLIMIT,
     recaptchasecret,
     recapchasitekey,
     domain
 )
 
 from models import User, Rankapp, Searchkey, SearchRank
-from sqlalchemy import func, desc
 
-from lib.filtersort import FilterSort
+
+# from lib.filtersort import FilterSort
 from lib.translator import PyNalator
 
 from colour import Color
@@ -51,8 +46,8 @@ from colour import Color
 app = Flask(
     __name__,
     static_url_path='/assets',
-    static_folder = "assets",
-    template_folder = "dist",
+    static_folder="assets",
+    template_folder="dist",
 )
 
 login_manager = LoginManager()
@@ -70,16 +65,18 @@ oauth = OAuth(app)
 oauth.register(**oauthconfig)
 
 vallcontact = Validator({
-    'subject':{'required': True, 'type': 'string'},
-    'message':{'required': True, 'type': 'string'},
+    'subject': {'required': True, 'type': 'string'},
+    'message': {'required': True, 'type': 'string'},
     # 'g-recaptcha-response': {'required': True}
 })
+
 
 @app.errorhandler(401)
 def unauthorized(_):
     """the error handler for unauthorised"""
     flash('You need to login to go to that page!', 'has-text-danger')
     return redirect("/")
+
 
 def local_breakdown(local):
     """Will filter out the locale language from a structure"""
@@ -89,62 +86,69 @@ def local_breakdown(local):
         boff = local
     return boff.lower()
 
+
 def convertToColor(s):
     value = str(s.encode().hex()[-6:])
     klont = Color(f"#{value}")
-
-    klont.saturation=0.9
-
+    klont.saturation = 0.9
     return klont.hex
+
 
 def is_human(captcha_response):
     """ Validating recaptcha response from google server
         Returns True captcha test passed for submitted form else returns False.
     """
-    payload = {'response':captcha_response, 'secret':recaptchasecret}
-    response = requests.post("https://www.google.com/recaptcha/api/siteverify", payload)
+    payload = {'response': captcha_response, 'secret': recaptchasecret}
+    response = requests.post(
+        "https://www.google.com/recaptcha/api/siteverify",
+        payload
+    )
     response_text = json.loads(response.text)
     return response_text['success']
 
-def pagination(db_object, itemnum):
-    """it does the pagination for db results"""
-    pagenum = 0
-    if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
-        pagenum = int(request.args.get('pagenum'))
 
-    total = app.session.query(db_object).count()
-    app.data['total'] = list(range(1, round_up(total/itemnum)+1))
-    app.data['pagenum'] = pagenum+1, round_up(total/itemnum)
-    return (
-        app.
-        session.
-        query(db_object).
-        limit(itemnum).
-        offset(pagenum*itemnum).
-        all()
-    )
+# def pagination(db_object, itemnum):
+#     """it does the pagination for db results"""
+#     pagenum = 0
+#     if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
+#         pagenum = int(request.args.get('pagenum'))
+#
+#     total = app.session.query(db_object).count()
+#     app.data['total'] = list(range(1, round_up(total/itemnum)+1))
+#     app.data['pagenum'] = pagenum+1, round_up(total/itemnum)
+#     return (
+#         app.
+#         session.
+#         query(db_object).
+#         limit(itemnum).
+#         offset(pagenum*itemnum).
+#         all()
+#     )
+
 
 def round_up(num):
     """does rounding up without importing the math module"""
     return int(-(-num // 1))
 
-def nongetpagination(db_object, itemnum):
-    """it does the pagination for db results"""
-    pagenum = 0
 
-    if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
-        pagenum = int(request.args.get('pagenum'))
+# def nongetpagination(db_object, itemnum):
+#     """it does the pagination for db results"""
+#     pagenum = 0
+#
+#     if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
+#         pagenum = int(request.args.get('pagenum'))
+#
+#     total = app.session.query(db_object).count()
+#     app.data['total'] = list(range(1, round_up(total/itemnum)+1))
+#     app.data['pagenum'] = pagenum+1, round_up(total/itemnum)
+#     return (
+#         app.
+#         session.
+#         query(db_object).
+#         limit(itemnum).
+#         offset(pagenum*itemnum)
+#     )
 
-    total = app.session.query(db_object).count()
-    app.data['total'] = list(range(1, round_up(total/itemnum)+1))
-    app.data['pagenum'] = pagenum+1, round_up(total/itemnum)
-    return (
-        app.
-        session.
-        query(db_object).
-        limit(itemnum).
-        offset(pagenum*itemnum)
-    )
 
 def extrapagina(result, itemnum):
     pagenum = 0
@@ -164,6 +168,7 @@ def extrapagina(result, itemnum):
 def load_user(userid):
     """we need this for authentication"""
     return app.session.query(User).filter(User.googleid == userid).first()
+
 
 @app.before_request
 def before_request_func():
@@ -207,6 +212,7 @@ def before_request_func():
             'pending':  0,
         }
 
+
 @app.route('/userprofile')
 @cache_for(hours=12)
 @login_required
@@ -220,6 +226,7 @@ def userprofile():
     app.pyn.close()
     return result
 
+
 @app.route('/login')
 @dont_cache()
 def login():
@@ -231,13 +238,12 @@ def login():
     app.pyn.close()
     return result
 
+
 @app.route("/developlogin")
 @dont_cache()
 def developlogin():
-
     if app.data['dev'] == "development":
         customuser = app.session.query(User).filter(User.googleid == 666).first()
-
         if not customuser:
             customuser = User(666)
             customuser.fullname = "developer"
@@ -245,11 +251,9 @@ def developlogin():
             customuser.locale = "nl"
             app.session.add(customuser)
             app.session.commit()
-
         login_user(customuser)
         app.session.close()
         app.pyn.close()
-
     return redirect("/", 303)
 
 
@@ -264,14 +268,17 @@ def authorize():
     user_info = resp.json()
 
     if user_info and 'id' in user_info and 'verified_email' in user_info:
-        user = app.session.query(User).filter(User.googleid == user_info['id']).first()
+        user = (app.
+                session.query(User).
+                filter(User.googleid == user_info['id']).
+                first())
 
         if user:
             login_user(user)
             if (user.fullname != user_info['name'] or
-            user.email != user_info['email'] or
-            user.locale != local_breakdown(user_info['locale'])
-            or user.email != user_info['email']):
+                    user.email != user_info['email'] or
+                    user.locale != local_breakdown(user_info['locale'])
+                    or user.email != user_info['email']):
                 user.fullname = user_info['name']
                 user.email = user_info['email']
                 user.locale = local_breakdown(user_info['locale'])
@@ -292,15 +299,16 @@ def authorize():
     else:
         return redirect("/", 303)
 
+
 @app.route('/')
 @dont_cache()
 def index():
-
     app.data['pagename'] = 'App Rank'
     result = render_template('index.html', data=app.data)
     app.session.close()
     app.pyn.close()
     return result
+
 
 def average(lst):
     return round(sum(lst) / len(lst))
@@ -317,11 +325,16 @@ def app_details(id):
     app.pyn.close()
     return result
 
+
 @app.route("/keyword_details/<id>")
 @dont_cache()
 def keyword_details(id):
 
-    searchsentresult = app.session.query(Searchkey).filter(Searchkey.id == id).first()
+    searchsentresult = (app.
+                        session.
+                        query(Searchkey).
+                        filter(Searchkey.id == id).
+                        first())
 
     installs = [x.installs for x in searchsentresult.rankapps]
     ratings = [x.ratings for x in searchsentresult.rankapps]
@@ -331,50 +344,63 @@ def keyword_details(id):
 
     print(searchsentresult.get_percent_labels(10))
 
-
     app.data['pagename'] = searchsentresult.searchsentence
-    app.data['installs'] = {'max': max(installs), 'min': min(installs), 'avg': average(installs)}
-    app.data['ratings'] = {'max': max(ratings), 'min': min(ratings), 'avg': average(ratings)}
-    app.data['sises'] = {'max': max(sises), 'min': min(sises), 'avg': average(sises)}
+    app.data['installs'] = {
+        'max': max(installs),
+        'min': min(installs),
+        'avg': average(installs)
+    }
+    app.data['ratings'] = {
+        'max': max(ratings),
+        'min': min(ratings),
+        'avg': average(ratings)
+    }
+    app.data['sises'] = {
+        'max': max(sises),
+        'min': min(sises),
+        'avg': average(sises)
+    }
 
     result = render_template('keywordetails.html', data=app.data)
     app.session.close()
     app.pyn.close()
     return result
 
+
 @app.route("/all_keywords")
 def all_keywords():
-
-
     if 'searchkey' in request.args and request.args['searchkey']:
         searchkey = request.args['searchkey']
-        results = app.session.query(Searchkey).filter(Searchkey.searchsentence.like(f"%{searchkey}%")).all()
+        results = (
+                app.session.query(Searchkey).
+                filter(Searchkey.searchsentence.like(f"%{searchkey}%")).
+                all())
     else:
         results = app.session.query(Searchkey).all()
 
     app.data['data'] = results
     app.data['pagename'] = 'All keywords'
 
-    result = render_template('alltrades.html', data=app.data)
+    result = render_template('allkeywords.html', data=app.data)
     app.session.close()
     app.pyn.close()
     return result
+
 
 @app.route('/logout')
 @dont_cache()
 @login_required
 def logout():
-    """
-        here you can logout, it is not used since you login via google oauth.
-        So as soon as you are on the site you are loggedin
-    """
+    """here you can logout, it is not used since you login via google oauth.
+        So as soon as you are on the site you are loggedin"""
     browsersession['redirect'] = "/"
     logout_user()
     app.session.close()
     app.pyn.close()
     return redirect('/')
 
-@app.route("/processadd", methods = ['POST'])
+
+@app.route("/processadd", methods=['POST'])
 @dont_cache()
 @login_required
 def processadd():
@@ -382,15 +408,19 @@ def processadd():
 
     searchkeys = request.form.get('searchkeys')
     locale = request.form.get('locale')
-
-
     if not searchkeys:
         app.session.close()
         app.pyn.close()
         flash('No search keys', 'has-text-danger')
         return redirect('/add')
 
-    results = app.session.query(Searchkey).filter(Searchkey.searchsentence == searchkeys.lower().strip()).filter(Searchkey.locale == locale).all()
+    results = (
+                app.
+                session.
+                query(Searchkey).
+                filter(Searchkey.searchsentence == searchkeys.lower().strip()).
+                filter(Searchkey.locale == locale).all()
+                )
 
     if not results:
         searchkey = Searchkey()
@@ -410,6 +440,7 @@ def processadd():
 
     return redirect(f'/rankapp/{searchkeyid}')
 
+
 @app.route("/add")
 @login_required
 def add_it():
@@ -419,32 +450,49 @@ def add_it():
     app.pyn.close()
     return result
 
+
 @app.route("/rankapp/<id>")
 @dont_cache()
 def rankapp(id):
-    """ dit gaat veel dingen doen, het laten zien van de grafieken, ook displayen van de zoek bar het gaat ook een zoekterm opslaan als je een nieuwe invoert"""
+    """ dit gaat veel dingen doen, het laten zien van de grafieken,
+    ook displayen van de zoek bar het gaat ook een zoekterm
+    opslaan als je een nieuwe invoert"""
 
     app.data['pagename'] = 'Playstore rank history'
 
     app.data['searchkeyid'] = id
-    results = extrapagina(app.session.query(Rankapp).join((Searchkey, Rankapp.searchkeys)).join((SearchRank, Rankapp.searchranks)).filter(Searchkey.id == id).order_by(SearchRank.ranktime, SearchRank.rank), 10).all()
+    results = extrapagina(
+                        app.
+                        session.
+                        query(Rankapp).
+                        join((Searchkey, Rankapp.searchkeys)).
+                        join((SearchRank, Rankapp.searchranks)).
+                        filter(Searchkey.id == id).
+                        order_by(SearchRank.ranktime, SearchRank.rank), 10).all()
 
-    searchsentresult = app.session.query(Searchkey).filter(Searchkey.id == id).first()
+    searchsentresult = (
+        app.
+        session.
+        query(Searchkey).
+        filter(Searchkey.id == id).
+        first()
+    )
 
     if searchsentresult:
         app.data['searchkey'] = searchsentresult.searchsentence
-
     app.data['rawres'] = results
 
     if results:
         labels = results[0].first_rank_plus_twelfe()
     else:
         labels = []
-
-
     app.data['labels'] = labels
     if results:
-        app.data['data'] = [{"stuff": x.get_ranks(),"name": x.name, "color": convertToColor(x.name), "id": x.id} for x in results]
+        app.data['data'] = [{
+            "stuff": x.get_ranks(),
+            "name": x.name,
+            "color": convertToColor(x.name),
+            "id": x.id} for x in results]
     else:
         app.data['data'] = []
 
@@ -452,6 +500,7 @@ def rankapp(id):
     app.session.close()
     app.pyn.close()
     return result
+
 
 @app.route('/contact')
 @cache_for(hours=12)
@@ -463,7 +512,8 @@ def contact():
     app.pyn.close()
     return result
 
-@app.route('/processcontact', methods = ['POST'])
+
+@app.route('/processcontact', methods=['POST'])
 @dont_cache()
 @login_required
 def processcontact():
@@ -491,8 +541,8 @@ def processcontact():
 
     msg = Message(
         f"App rank contact form!, {subject}",
-        sender = 'sixdots.soft@gmail.com',
-        body= f"name: {current_user.fullname}\nemail: {current_user.email}\nmessage: {message}",
+        sender='sixdots.soft@gmail.com',
+        body=f"name: {current_user.fullname}\nemail: {current_user.email}\nmessage: {message}",
         recipients=['sixdots.soft@gmail.com']
     )
 

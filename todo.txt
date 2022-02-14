@@ -75,13 +75,19 @@ een bar graph etc. (done)
 
 #clean it up !
 clean up the templates
-clean up the code
-oude files weg
-macros clean
-alles door de validator
+clean up the code (done)
+oude files weg (done)
+macros clean (done)
+alles door de validator (done)
 
 next !
 implement bars
 kijken waar die foutmeldingen vandaankomen alles doorklikken
 keywords in de begin texten
 app details finalisen !
+aantal gecrawlde apps updaten naar 200
+
+
+also
+fix recapcha
+add doc strings

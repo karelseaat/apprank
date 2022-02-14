@@ -1,27 +1,4 @@
-{% macro build_badge(data, title, colorclass, iconclass) %}
-<div class="tile is-parent">
-  <div class="card tile is-child">
-    <div class="card-content">
-      <div class="level is-mobile">
-        <div class="level-item">
-          <div class="is-widget-label">
-            <h3 class="subtitle is-spaced">
-              {{ trans(title, self) }}
-            </h3>
-            <h1 class="title">
-              {{ data[-1] }}
-            </h1>
-          </div>
-        </div>
-        <div class="level-item has-widget-icon">
-          <div class="is-widget-icon"><span class="icon {{ colorclass }} is-large"><i class="mdi {{ iconclass }} mdi-48px"></i></span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-{% endmacro %}
+
 
 {% macro build_pagination(pagename, data) %}
 <div class="level">
@@ -159,7 +136,6 @@
 
 
 {% macro build_rating(score) %}
-
 
 <span title="{{ score }}">
 
