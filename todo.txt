@@ -84,7 +84,7 @@ next !
 implement bars (done)
 kijken waar die foutmeldingen vandaankomen alles doorklikken (done)
 keywords in de begin texten <--
-app details finalisen ! <--
+app details finalisen ! (done)
 
 
 also

@@ -329,10 +329,7 @@ def keyword_details(id):
 
     app.data['pagename'] = searchsentresult.searchsentence
 
-    # for x in installs:
-    #     print(x)
-    #
-    # return "nope"
+
 
     app.data['installs'] = {
         'max': max(installs),
