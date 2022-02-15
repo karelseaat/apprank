@@ -10,7 +10,7 @@ sys.path.append(dirname + '/..')
 from config import make_session
 from config import Config
 from config import domain
-from models import Rankapp
+from models import Rankapp, AppVersion
 import sqlalchemy
 import time
 
@@ -25,8 +25,8 @@ def check_apps():
     for aapp in apps:
         try:
             singleresult = app(aapp[0])
-            print(singleresult.keys())
-            print(singleresult['version'])
+            # print(singleresult.keys())
+            # print(singleresult['version'])
             appresults.append(singleresult)
         except Exception as e:
             print(e)

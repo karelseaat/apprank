@@ -1,14 +1,21 @@
 // Bar chart
 
-var settings = {
+var blaat = JSON.parse(document.getElementById("klont").getAttribute('names'));
+
+function settings(set)
+{
+
+  console.log(JSON.parse(document.getElementById("labels-" + set).innerHTML),)
+
+  return {
     type: 'bar',
     data: {
-      labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+      labels: JSON.parse(document.getElementById("labels-" + set).innerHTML),
       datasets: [
         {
-          label: "Population (millions)",
-          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-          data: [2478,5267,734,784,433]
+          // label: "Population (millions)",
+          backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#3cba9f"],
+          data: JSON.parse(document.getElementById("data-" + set).innerHTML)
         }
       ]
     },
@@ -16,12 +23,10 @@ var settings = {
       legend: { display: false },
       title: {
         display: true,
-        text: 'Predicted world population (millions) in 2050'
+        text: document.getElementById("unit-" + set).innerHTML
       }
     }
+  }
 }
 
-
-var blaat = document.getElementById("klont").getAttribute('names');
-
-JSON.parse(blaat).forEach(element => new Chart(document.getElementById(element + "-canvas"), settings));
+blaat.forEach(element => new Chart(document.getElementById(element + "-canvas"), settings(element)));

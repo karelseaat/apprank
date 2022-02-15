@@ -124,7 +124,11 @@ class Rankapp(DictSerializableMixin):
     appversions = relationship("AppVersion", back_populates="rankapp")
 
     def last_app_version(self):
-        return self.appversions[-1]
+
+        if self.appversions:
+            return self.appversions[-1]
+        else:
+            return ""
 
     def first_rank_plus_twelfe(self):
 

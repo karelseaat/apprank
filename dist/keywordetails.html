@@ -29,11 +29,14 @@
 </section>
 
 <section class="section">
-  <!-- <canvas id="bar-chart" width="800" height="450"></canvas> -->
 
-{{ build_bar_graph(data.installs, "nr1", "mega") }}
 
-<klont id="klont" names='["nr1"]'/>
+
+{{ build_bar_graph( data.labels, data.adddata, "nr1", "mega", "label1") }}
+
+{{ build_bar_graph( data.labels, data.testdata, "nr2", "mega", "label2") }}
+
+<klont id="klont" names='["nr1", "nr2"]'/>
 
 </section>
 

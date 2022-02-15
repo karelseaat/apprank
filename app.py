@@ -37,8 +37,6 @@ from config import (
 
 from models import User, Rankapp, Searchkey, SearchRank
 
-
-# from lib.filtersort import FilterSort
 from lib.translator import PyNalator
 
 from colour import Color
@@ -129,25 +127,6 @@ def is_human(captcha_response):
 def round_up(num):
     """does rounding up without importing the math module"""
     return int(-(-num // 1))
-
-
-# def nongetpagination(db_object, itemnum):
-#     """it does the pagination for db results"""
-#     pagenum = 0
-#
-#     if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
-#         pagenum = int(request.args.get('pagenum'))
-#
-#     total = app.session.query(db_object).count()
-#     app.data['total'] = list(range(1, round_up(total/itemnum)+1))
-#     app.data['pagenum'] = pagenum+1, round_up(total/itemnum)
-#     return (
-#         app.
-#         session.
-#         query(db_object).
-#         limit(itemnum).
-#         offset(pagenum*itemnum)
-#     )
 
 
 def extrapagina(result, itemnum):
@@ -336,15 +315,25 @@ def keyword_details(id):
                         filter(Searchkey.id == id).
                         first())
 
-    installs = [x.installs for x in searchsentresult.rankapps]
-    ratings = [x.ratings for x in searchsentresult.rankapps]
-    sises = [x.installsize for x in searchsentresult.rankapps if x.installsize >= 0]
+    installs = [x.installs for x in searchsentresult.rankapps  if x.installs]
+    ratings = [x.ratings for x in searchsentresult.rankapps  if x.ratings]
+    sises = [x.installsize for x in searchsentresult.rankapps if x.installsize  and x.installsize >= 0]
 
-    print(searchsentresult.get_percent_adds())
 
-    print(searchsentresult.get_percent_labels(10))
+
+    app.data['labels'] = searchsentresult.get_percent_labels(10)
+    # app.data['adddata'] = searchsentresult.get_percent_adds()
+    app.data['adddata'] = [1,2,3,4,5,6,7,8,9,10]
+
+    app.data['testdata'] = [10,9,8,7,6,5,4,3,2,1]
 
     app.data['pagename'] = searchsentresult.searchsentence
+
+    # for x in installs:
+    #     print(x)
+    #
+    # return "nope"
+
     app.data['installs'] = {
         'max': max(installs),
         'min': min(installs),
