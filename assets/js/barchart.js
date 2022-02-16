@@ -5,7 +5,6 @@ var blaat = JSON.parse(document.getElementById("klont").getAttribute('names'));
 function settings(set)
 {
 
-  console.log(JSON.parse(document.getElementById("labels-" + set).innerHTML),)
 
   return {
     type: 'bar',

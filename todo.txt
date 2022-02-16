@@ -83,11 +83,12 @@ alles door de validator (done)
 next !
 implement bars (done)
 kijken waar die foutmeldingen vandaankomen alles doorklikken (done)
-keywords in de begin texten <--
+keywords in de begin texten (done)
 app details finalisen ! (done)
-
+bars finalisen (done)
 
 also
 fix recapcha
 add doc strings
 aantal gecrawlde apps updaten naar 200
+de sorteringen en de oders van de sql moet echt beter, ff naarkijken (ook ff lang)

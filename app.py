@@ -105,24 +105,6 @@ def is_human(captcha_response):
     return response_text['success']
 
 
-# def pagination(db_object, itemnum):
-#     """it does the pagination for db results"""
-#     pagenum = 0
-#     if 'pagenum' in request.args and request.args.get('pagenum').isnumeric():
-#         pagenum = int(request.args.get('pagenum'))
-#
-#     total = app.session.query(db_object).count()
-#     app.data['total'] = list(range(1, round_up(total/itemnum)+1))
-#     app.data['pagenum'] = pagenum+1, round_up(total/itemnum)
-#     return (
-#         app.
-#         session.
-#         query(db_object).
-#         limit(itemnum).
-#         offset(pagenum*itemnum).
-#         all()
-#     )
-
 
 def round_up(num):
     """does rounding up without importing the math module"""
@@ -315,21 +297,21 @@ def keyword_details(id):
                         filter(Searchkey.id == id).
                         first())
 
+    for x in searchsentresult.rankapps:
+        print(x.searchranks[0].rank, x.name.encode(), x.searchranks[0].ranktime)
+    return "apppppp"
+
     installs = [x.installs for x in searchsentresult.rankapps  if x.installs]
     ratings = [x.ratings for x in searchsentresult.rankapps  if x.ratings]
     sises = [x.installsize for x in searchsentresult.rankapps if x.installsize  and x.installsize >= 0]
 
 
-
     app.data['labels'] = searchsentresult.get_percent_labels(10)
-    # app.data['adddata'] = searchsentresult.get_percent_adds()
-    app.data['adddata'] = [1,2,3,4,5,6,7,8,9,10]
-
-    app.data['testdata'] = [10,9,8,7,6,5,4,3,2,1]
+    app.data['adddata'] = searchsentresult.get_percent_adds()
+    app.data['moviedata'] = searchsentresult.get_percent_movie()
+    app.data['installdata'] = searchsentresult.get_percent_installs()
 
     app.data['pagename'] = searchsentresult.searchsentence
-
-
 
     app.data['installs'] = {
         'max': max(installs),

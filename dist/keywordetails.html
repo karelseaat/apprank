@@ -31,12 +31,14 @@
 <section class="section">
 
 
+<br/>
+{{ build_bar_graph( data.labels, data.adddata, "nr1", "Adds", "Avg adds per rank") }}
 
-{{ build_bar_graph( data.labels, data.adddata, "nr1", "mega", "label1") }}
+{{ build_bar_graph( data.labels, data.moviedata, "nr2", "Movie", "Avg movies per rank") }}
 
-{{ build_bar_graph( data.labels, data.testdata, "nr2", "mega", "label2") }}
+{{ build_bar_graph( data.labels, data.installdata, "nr3", "Installs", "Avg installs per rank") }}
 
-<klont id="klont" names='["nr1", "nr2"]'/>
+<klont id="klont" names='["nr1", "nr2", "nr3"]'/>
 
 </section>
 

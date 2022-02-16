@@ -119,6 +119,7 @@ class Rankapp(DictSerializableMixin):
     searchranks = relationship(
         "SearchRank",
         back_populates="rankapp",
+        order_by="[SearchRank.ranktime.desc()]"
     )
 
     appversions = relationship("AppVersion", back_populates="rankapp")
@@ -186,7 +187,7 @@ class Searchkey(DictSerializableMixin):
     rankapps = relationship(
         "Rankapp",
         secondary=search_app_association,
-        back_populates="searchkeys"
+        back_populates="searchkeys",
     )
 
     users = relationship(
@@ -194,6 +195,7 @@ class Searchkey(DictSerializableMixin):
         secondary=user_search_association,
         back_populates="searchkeys"
     )
+
 
     def get_percent_adds(self):
         temp = []
