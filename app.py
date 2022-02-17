@@ -10,7 +10,7 @@ from flask import (
     flash,
     session as browsersession
 )
-
+from datetime import datetime, timedelta
 from cerberus import Validator
 from flask_mail import Mail, Message
 
@@ -34,6 +34,8 @@ from config import (
     recapchasitekey,
     domain
 )
+
+import statistics
 
 from models import User, Rankapp, Searchkey, SearchRank
 
@@ -286,32 +288,52 @@ def app_details(id):
     app.pyn.close()
     return result
 
+def get_percent_labels(percent):
+    return [f"{x*10}-{(x+1)*10}" for x in range(10)]
+
+def get_percentapps(listoresults, percent, index):
+    nrofapps = len(listoresults)
+    percentofapps = round((nrofapps / 100) * percent)
+
+    return listoresults[percentofapps * index:percentofapps * (index+1)]
+
+def get_percent_adds(listoresults):
+    temp = []
+    for x in range(10):
+        temp.append(statistics.mean([bool(x.adds) for x in get_percentapps(listoresults, 10, x)]))
+    return temp
+
+def get_percent_movie(listoresults):
+    temp = []
+    for x in range(10):
+        temp.append(statistics.mean([bool(x.movie) for x in get_percentapps(listoresults, 10, x)]))
+    return temp
+
+def get_percent_installs(listoresults):
+    temp = []
+    for x in range(10):
+        temp.append(statistics.mean([x.installs for x in get_percentapps(listoresults, 10, x)]))
+    return temp
 
 @app.route("/keyword_details/<id>")
 @dont_cache()
 def keyword_details(id):
 
-    searchsentresult = (app.
-                        session.
-                        query(Searchkey).
-                        filter(Searchkey.id == id).
-                        first())
+    weekearl = datetime.now() - timedelta(days = 8)
+    searchsentresult = app.session.query(Rankapp).join((Rankapp, Searchkey.rankapps)).join(SearchRank, Rankapp.searchranks).filter(SearchRank.ranktime > weekearl).filter(Searchkey.id == id).order_by(SearchRank.rank).all()
 
-    for x in searchsentresult.rankapps:
-        print(x.searchranks[0].rank, x.name.encode(), x.searchranks[0].ranktime)
-    return "apppppp"
+    keywors = app.session.query(Searchkey).filter(Searchkey.id == id).first()
 
-    installs = [x.installs for x in searchsentresult.rankapps  if x.installs]
-    ratings = [x.ratings for x in searchsentresult.rankapps  if x.ratings]
-    sises = [x.installsize for x in searchsentresult.rankapps if x.installsize  and x.installsize >= 0]
+    installs = [x.installs for x in searchsentresult  if x.installs]
+    ratings = [x.ratings for x in searchsentresult  if x.ratings]
+    sises = [x.installsize for x in searchsentresult if x.installsize  and x.installsize >= 0]
 
+    app.data['labels'] = get_percent_labels(10)
+    app.data['adddata'] = get_percent_adds(searchsentresult)
+    app.data['moviedata'] = get_percent_movie(searchsentresult)
+    app.data['installdata'] = get_percent_installs(searchsentresult)
 
-    app.data['labels'] = searchsentresult.get_percent_labels(10)
-    app.data['adddata'] = searchsentresult.get_percent_adds()
-    app.data['moviedata'] = searchsentresult.get_percent_movie()
-    app.data['installdata'] = searchsentresult.get_percent_installs()
-
-    app.data['pagename'] = searchsentresult.searchsentence
+    app.data['pagename'] = keywors.searchsentence
 
     app.data['installs'] = {
         'max': max(installs),
@@ -429,6 +451,10 @@ def rankapp(id):
     app.data['pagename'] = 'Playstore rank history'
 
     app.data['searchkeyid'] = id
+
+    # weekearl = datetime.now() - timedelta(days = 8)
+    # searchsentresult = app.session.query(Rankapp).join((Rankapp, Searchkey.rankapps)).join(SearchRank, Rankapp.searchranks).filter(SearchRank.ranktime > weekearl).filter(Searchkey.id == id).order_by(SearchRank.rank).all()
+
     results = extrapagina(
                         app.
                         session.
