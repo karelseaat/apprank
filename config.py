@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models import Base
 import os
-# from config import make_session
+
 
 REVIEWLIMIT = 1000
 
@@ -11,8 +11,8 @@ domain = "trade.six-dots.app"
 
 oauthconfig = {
     'name':'google',
-    'client_id':'165762446949-i93usgf0eslkm7jnfe6aqgfj6p2na85a.apps.googleusercontent.com',
-    'client_secret':'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',
+    'client_id': os.getenv("CLIENTID"),
+    'client_secret': os.getenv("CLIENTSECRET"),
     'access_token_url':'https://accounts.google.com/o/oauth2/token',
     'access_token_params':None,
     'authorize_url':'https://accounts.google.com/o/oauth2/auth',
@@ -24,8 +24,8 @@ oauthconfig = {
 
 CONNECTIONURI = "sqlite:////{}/searchrank.sqlite".format(os.path.dirname(__file__))
 
-recaptchasecret = "6LfRxyIeAAAAAI6BAp4-34xICXyfbyjYWk92QCpD"
-recapchasitekey = "6LfRxyIeAAAAADWz_2kzZgLEez07WtiA5jz_CeXF"
+recaptchasecret = os.getenv("RECAPCHASECRET")
+recapchasitekey = os.getenv("RECAPCHASITEKEY")
 
 def make_session():
     engine = create_engine(CONNECTIONURI, echo=False, connect_args={'check_same_thread': False})
@@ -37,8 +37,8 @@ def make_session():
 class Config(object):
     MAIL_SERVER='smtp.gmail.com'
     MAIL_PORT=465
-    MAIL_USERNAME='sixdots.soft@gmail.com'
-    MAIL_PASSWORD='oqmhnpocsnigsvrx'
+    MAIL_USERNAME=os.getenv("MAILUSERNAME")
+    MAIL_PASSWORD=os.getenv("MAILPASSWORD")
     MAIL_USE_TLS=False
     MAIL_USE_SSL=True
 

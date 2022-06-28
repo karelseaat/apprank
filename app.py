@@ -51,7 +51,7 @@ app = Flask(
 login_manager = LoginManager()
 login_manager.setup_app(app)
 
-app.secret_key = 'random secret223'
+app.secret_key = os.getenv("SECRETKEY")
 app.session = make_session()
 
 app.config.from_object("config.Config")
