@@ -119,7 +119,7 @@ class Rankapp(DictSerializableMixin):
     searchranks = relationship(
         "SearchRank",
         back_populates="rankapp",
-        order_by="[SearchRank.ranktime.desc()]"
+        # order_by="[SearchRank.ranktime.desc()]"
     )
 
     appversions = relationship("AppVersion", back_populates="rankapp")
@@ -197,17 +197,17 @@ class Searchkey(DictSerializableMixin):
     )
 
 
-    def get_percent_adds(self):
-        temp = []
-        for x in range(10):
-            temp.append(statistics.mean([bool(x.adds) for x in self.get_percentapps(10, x)]))
-        return temp
-
-    def get_percent_movie(self):
-        temp = []
-        for x in range(10):
-            temp.append(statistics.mean([bool(x.movie) for x in self.get_percentapps(10, x)]))
-        return temp
+    # def get_percent_adds(self):
+    #     temp = []
+    #     for x in range(10):
+    #         temp.append(statistics.mean([bool(x.adds) for x in self.get_percentapps(10, x)]))
+    #     return temp
+    #
+    # def get_percent_movie(self):
+    #     temp = []
+    #     for x in range(10):
+    #         temp.append(statistics.mean([bool(x.movie) for x in self.get_percentapps(10, x)]))
+    #     return temp
 
     def get_percent_inapppurchases(self):
         temp = []
@@ -221,11 +221,11 @@ class Searchkey(DictSerializableMixin):
             temp.append(statistics.mean([x.textlen for x in self.get_percentapps(10, x)]))
         return temp
 
-    def get_percent_installs(self):
-        temp = []
-        for x in range(10):
-            temp.append(statistics.mean([x.installs for x in self.get_percentapps(10, x)]))
-        return temp
+    # def get_percent_installs(self):
+    #     temp = []
+    #     for x in range(10):
+    #         temp.append(statistics.mean([x.installs for x in self.get_percentapps(10, x)]))
+    #     return temp
 
     def get_percent_ratings(self):
         temp = []
@@ -233,15 +233,15 @@ class Searchkey(DictSerializableMixin):
             temp.append(statistics.mean([x.ratings for x in self.get_percentapps(10, x)]))
         return temp
 
-    def get_percent_labels(self, percent):
-        return [f"{x*10}-{(x+1)*10}" for x in range(10)]
+    # def get_percent_labels(self, percent):
+    #     return [f"{x*10}-{(x+1)*10}" for x in range(10)]
 
 
-    def get_percentapps(self, percent, index):
-        nrofapps = len(self.rankapps)
-        percentofapps = round((nrofapps / 100) * percent)
-
-        return self.rankapps[percentofapps * index:percentofapps * (index+1)]
+    # def get_percentapps(self, percent, index):
+    #     nrofapps = len(self.rankapps)
+    #     percentofapps = round((nrofapps / 100) * percent)
+    #
+    #     return self.rankapps[percentofapps * index:percentofapps * (index+1)]
 
     def get_first_age(self):
 
