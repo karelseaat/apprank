@@ -1,6 +1,0 @@
-Hi people of the android forums
-
-We have made a tool that will track the android store rank over time based on the search words.
-Perhaps this will be interesting for all the android developers / marketeers out there.
-
-http://apprank.six-dots.app
