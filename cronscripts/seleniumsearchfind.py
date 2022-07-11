@@ -37,7 +37,6 @@ def get_apps(searchkey):
         cwisses = []
         print(f"No results in search: {searchkey.searchsentence}")
 
-
     for cwsis in cwisses:
 
         ass = cwsis.find_elements_by_tag_name('a')
@@ -73,6 +72,9 @@ results = session.query(Searchkey).all()
 
 for result in results:
     driver = webdriver.Firefox(options=options)
+    if not result.locale:
+        result.locale = 'us'
+
     driver.get(f'https://play.google.com/store/search?q={result.searchsentence}&c=apps&gl={result.locale}')
     last_height = driver.execute_script("return document.body.scrollHeight")
 
@@ -89,9 +91,7 @@ for result in results:
             break
         last_height = new_height
 
-
     get_apps(result)
-
 
     # session.close()
     driver.quit()

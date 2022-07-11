@@ -7,6 +7,8 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from dateutil.relativedelta import relativedelta
 import json
+from pprint import pprint
+import statistics
 
 
 Base = declarative_base(name="Base")
@@ -42,7 +44,7 @@ class User(DictSerializableMixin):
     fullname = Column(String(64))
     picture = Column(String(256))
     email = Column(String(256))
-    locale = Column(String(3))
+    locale = Column(String(3), nullable=True)
     googleid = Column(String(256), nullable=False)
 
     searchkeys = relationship(
@@ -83,12 +85,29 @@ class SearchRank(DictSerializableMixin):
     rank = Column(Integer)
     ranktime = Column(DateTime, default=datetime.datetime.utcnow)
 
+class AppVersion(DictSerializableMixin):
+    __tablename__ = 'appversion'
+    id = Column(Integer, primary_key=True)
+    date = Column(DateTime, default=datetime.datetime.utcnow)
+    version = Column(String(32), nullable=False)
+    rankapp = relationship("Rankapp", back_populates="appversions")
+    rankapp_id = Column(ForeignKey('rankingapp.id'))
+
 class Rankapp(DictSerializableMixin):
     __tablename__ = 'rankingapp'
     id = Column(Integer, primary_key=True)
     name = Column(String(64), nullable=False)
     appidstring = Column(String(64), nullable=False)
     imageurl = Column(String(256))
+    installs = Column(Integer, default=0)
+    ratings = Column(Integer, default=0)
+    installsize = Column(Integer, default=0)
+    textlen = Column(Integer, default=0)
+    adds = Column(Boolean, default=False)
+    movie = Column(Boolean, default=False)
+    inapppurchases = Column(Boolean, default=False)
+    developerwebsite = Column(String(128), default="")
+    developeraddress = Column(String(256), default="")
 
     paid = Column(Boolean, default=False)
     searchkeys = relationship(
@@ -99,19 +118,44 @@ class Rankapp(DictSerializableMixin):
 
     searchranks = relationship(
         "SearchRank",
-        back_populates="rankapp"
+        back_populates="rankapp",
+        # order_by="[SearchRank.ranktime.desc()]"
     )
 
-    def first_rank_plus_twelfe(self):
-        if self.searchranks:
-            return [(self.searchranks[0].ranktime - relativedelta(weeks=i)).strftime("%d/%m/%Y") for i in range(52)]
+    appversions = relationship("AppVersion", back_populates="rankapp")
+
+    def last_app_version(self):
+
+        if self.appversions:
+            return self.appversions[-1]
         else:
-            [(datetime.datetime.now() - relativedelta(weeks=i)).strftime("%d/%m/%Y") for i in range(52)]
+            return ""
+
+    def first_rank_plus_twelfe(self):
+
+        if self.searchranks:
+            results =  [(self.searchranks[-1].ranktime - relativedelta(weeks=i)) for i in range(52)]
+        else:
+            results = [(datetime.datetime.now() - relativedelta(weeks=i)) for i in range(52)]
+
+        return [x.strftime("%Y/%m/%d") for x in results]
+
+    def get_last_rank(self):
+        ranks = self.searchranks
+        if ranks:
+
+            return ranks[0]
+        else:
+            return []
 
     def get_first_rank(self):
         ranks = self.searchranks
         if ranks:
-            return ranks[0]
+            firstrank = ranks[-1]
+            if (datetime.datetime.now() - firstrank.ranktime).days > 7:
+                return []
+
+            return ranks[-1]
         else:
             return []
 
@@ -120,8 +164,16 @@ class Rankapp(DictSerializableMixin):
         self.appidstring = idstring
 
     def get_ranks(self):
-        test = [{"y": x.rank, "x": f'new Date({x.ranktime.strftime("%Y/%m/%d")})'} for x in self.searchranks]
-        return json.dumps(test[::-1])
+
+        klont = {f'{x}':{"y": "null", "x": f'new Date({x})'} for x in self.first_rank_plus_twelfe()}
+
+        test = {f'{x.ranktime.strftime("%Y/%m/%d")}':{"y": x.rank, "x": f'new Date({x.ranktime.strftime("%Y/%m/%d")})'} for x in self.searchranks}
+
+        temp = {**klont, **test}
+
+        test = list(temp.values())
+
+        return json.dumps(test)
 
     def get_url(self):
         """this will get the url for an app back to the apps playstore"""
@@ -131,11 +183,11 @@ class Searchkey(DictSerializableMixin):
     __tablename__ = 'searchkey'
     id = Column(Integer, primary_key=True)
     searchsentence = Column(String(256), nullable=False)
-    locale = Column(String(3), nullable=False)
+    locale = Column(String(3), nullable=True)
     rankapps = relationship(
         "Rankapp",
         secondary=search_app_association,
-        back_populates="searchkeys"
+        back_populates="searchkeys",
     )
 
     users = relationship(
@@ -144,7 +196,57 @@ class Searchkey(DictSerializableMixin):
         back_populates="searchkeys"
     )
 
+
+    # def get_percent_adds(self):
+    #     temp = []
+    #     for x in range(10):
+    #         temp.append(statistics.mean([bool(x.adds) for x in self.get_percentapps(10, x)]))
+    #     return temp
+    #
+    # def get_percent_movie(self):
+    #     temp = []
+    #     for x in range(10):
+    #         temp.append(statistics.mean([bool(x.movie) for x in self.get_percentapps(10, x)]))
+    #     return temp
+
+    def get_percent_inapppurchases(self):
+        temp = []
+        for x in range(10):
+            temp.append(statistics.mean([bool(x.inapppurchases) for x in self.get_percentapps(10, x)]))
+        return temp
+
+    def get_percent_textlen(self):
+        temp = []
+        for x in range(10):
+            temp.append(statistics.mean([x.textlen for x in self.get_percentapps(10, x)]))
+        return temp
+
+    # def get_percent_installs(self):
+    #     temp = []
+    #     for x in range(10):
+    #         temp.append(statistics.mean([x.installs for x in self.get_percentapps(10, x)]))
+    #     return temp
+
+    def get_percent_ratings(self):
+        temp = []
+        for x in range(10):
+            temp.append(statistics.mean([x.ratings for x in self.get_percentapps(10, x)]))
+        return temp
+
+    # def get_percent_labels(self, percent):
+    #     return [f"{x*10}-{(x+1)*10}" for x in range(10)]
+
+
+    # def get_percentapps(self, percent, index):
+    #     nrofapps = len(self.rankapps)
+    #     percentofapps = round((nrofapps / 100) * percent)
+    #
+    #     return self.rankapps[percentofapps * index:percentofapps * (index+1)]
+
     def get_first_age(self):
 
         if self.rankapps:
-            return int((datetime.datetime.now() - self.rankapps[0].get_first_rank().ranktime).days / 7)
+            if self.rankapps[0].get_last_rank():
+                return int((datetime.datetime.now() - self.rankapps[0].get_last_rank().ranktime).days / 7)
+            else:
+                return None

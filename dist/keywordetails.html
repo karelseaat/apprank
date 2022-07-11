@@ -1,0 +1,47 @@
+{% from "macros.html" import build_reset_button, build_search_button, build_add_button, build_table, build_card_header, build_app_table, build_simple_app_table, build_app_add_join, build_form_submit, build_defautl_field,build_bar_graph %}
+
+{% extends "base.html" %}
+{% block content %}
+
+<section class="section is-main-section">
+  <div class="tile is-ancestor">
+    <div class="tile is-parent">
+      <div class="card tile is-child">
+        {{ build_card_header('Keyword info','mdi-key-outline ') }}
+        <div class="card-content">
+
+          {{ build_defautl_field("Average installs", data.installs.avg) }}
+          {{ build_defautl_field("Max installs", data.installs.max) }}
+          {{ build_defautl_field("Min installs", data.installs.min) }}
+          <br>
+          {{ build_defautl_field("Average reviews", data.ratings.avg) }}
+          {{ build_defautl_field("Max reviews", data.ratings.max) }}
+          {{ build_defautl_field("Min reviews", data.ratings.min) }}
+          <br>
+          {{ build_defautl_field("Average app size", data.sises.avg) }}
+          {{ build_defautl_field("Max app size", data.sises.max) }}
+          {{ build_defautl_field("Min app size", data.sises.min) }}
+
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+<section class="section">
+
+
+<br/>
+{{ build_bar_graph( data.labels, data.adddata, "nr1", "Adds", "Avg adds per rank") }}
+
+{{ build_bar_graph( data.labels, data.moviedata, "nr2", "Movie", "Avg movies per rank") }}
+
+{{ build_bar_graph( data.labels, data.installdata, "nr3", "Installs", "Avg installs per rank") }}
+
+<klont id="klont" names='["nr1", "nr2", "nr3"]'/>
+
+</section>
+
+
+
+{% endblock %}

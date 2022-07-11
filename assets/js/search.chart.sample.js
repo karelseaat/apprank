@@ -1,33 +1,31 @@
 "use strict";
 
-var randomChartData = function randomChartData(n) {
-  var data = [];
+var canvas = document.getElementById('big-line-chart')
 
-  for (var i = 0; i < n; i++) {
-    data.push(Math.round(Math.random() * 200));
-  }
+var data_array = JSON.parse(document.getElementById('apps').innerHTML)
 
-  return data;
-};
+var allvalues = [];
+for(var key in data_array) {
 
-var chartColors = {
-  "default": {
-    primary: '#00D1B2',
-    info: '#209CEE',
-    danger: '#FF3860'
-  }
-};
+    for(var thekey in data_array[key]['data']) {
+      if (data_array[key]['data'][thekey]['y'] !== "null")
+      {
+        allvalues.push(data_array[key]['data'][thekey]['y'])
+      }
 
-// console.log(document.getElementById('apps').innerHTML)
+    }
+}
 
-var ctx = document.getElementById('big-line-chart').getContext('2d');
+
+var ctx = canvas.getContext('2d');
 var newchart = new Chart(ctx, {
   type: 'line',
   data: {
-    datasets: JSON.parse(document.getElementById('apps').innerHTML),
+    datasets: data_array,
     labels: JSON.parse(document.getElementById('labels').innerHTML)
   },
   options: {
+
     maintainAspectRatio: false,
     legend: {
       display: true
@@ -57,9 +55,12 @@ var newchart = new Chart(ctx, {
           zeroLineColor: 'transparent'
         },
         ticks: {
+          beginAtZero: true,
           reverse: true,
           padding: 20,
-          fontColor: '#9a9a9a'
+          fontColor: '#9a9a9a',
+          min: Math.min.apply(this, allvalues) - 2,
+          max: Math.max.apply(this, allvalues) + 2
         }
       }],
       xAxes: [{

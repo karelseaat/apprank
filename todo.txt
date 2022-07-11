@@ -1,0 +1,94 @@
+#wat gaat dit worden ?
+1 in eerste instantie geeft het de google play store rank weer van een app als je zoek op een keywoord en de geschiedenis daarvan !
+2 voor ieder searchwoord dat we hebben wordt aan de hand van alle apps die onder dat search word gevonden worden andere search woorden voorgesteld !
+
+# the peginnink
+1 maken van database structuur (done)
+2 ff de app.py kopieren van treetareet (done)
+3 maken van rudimentaire playbook (done)
+4 remove sub domain (done)
+5 create searchrank domain (done)
+
+# a bit more that the peginnink
+1 login werkend maken (done)
+2 maak profile werkend (gewoon de paramers die niet te maken m=hebben met searchrank weghalen.) (done)
+3 pas navigatie aan in app.py (done)
+4 naam van page veranderen (done)
+5 verzin een grof logo (done)
+
+# klonter, of bestond die al in tree a rate
+1 zoek veld in de rank app maken ! (done)
+2 rank app page afmaken (done ish)
+3 bezig met de selenium crawler (done)
+4 bezig met de graph overview (done)
+
+# die dingen die ook gedaam moeten woorden
+1 logo aan passen (done)
+2 naam van de site aanpassen (done)
+3 dns record voor de site maken (done)
+4 bezig met de playbook (done)
+5 pause (done)
+
+# polijst tijd
+1 selenium script aapassen dat een app en een search word gekoppeld zijn zodat dezelfde apps onder verschillende searchwords kunnen. (done)
+2 text foutcontrole (done)
+3 remove whitespace from seart form (done)
+4 graph search (done)
+5 graph all off all on (done)
+
+# additional pilons
+1 search op keywords (done)
+2 pagination on keywords (done)
+
+# error fix 1
+1 grafiek lijkt omgekeerd ! fix it (done)
+2 na login lijkt het dat je nog niet ingelogt bent ! (done)
+
+# extra info
+1 app info (db)
+1.1 woord lengte per app texten (done)
+1.2 avg review length (done)
+1.3 max review length (done)
+1.4 developer website (done)
+1.5 developer address (done)
+1.6 adds (done)
+1.7 inapppurchases (done)
+1.8 movie (done)
+
+2 keyword info
+bijhouden van versies ? (done)
+gemiddelde woord lengte ! per app text (done)
+num of app with moview per x nr of apps (done)
+num of adds per nr of apps (done)
+num of in app purchases per x num of apps (done)
+
+
+average review text length
+bar grafiek met 10 bars waarbij iedere 10% is van de apps gerekend vanaf de top apps.
+dus van de bijvoorbeeld 10 apps in de 10% hoeveel hebben er adds
+
+hoeveel hebben er videos ? (done)
+
+een bar graph met gemiddelde woorden voor de text ! (done)
+
+een bar graph etc. (done)
+
+#clean it up !
+clean up the templates
+clean up the code (done)
+oude files weg (done)
+macros clean (done)
+alles door de validator (done)
+
+next !
+implement bars (done)
+kijken waar die foutmeldingen vandaankomen alles doorklikken (done)
+keywords in de begin texten (done)
+app details finalisen ! (done)
+bars finalisen (done)
+
+also
+fix recapcha
+add doc strings
+aantal gecrawlde apps updaten naar 200
+de sorteringen en de oders van de sql moet echt beter, ff naarkijken (ook ff lang)
