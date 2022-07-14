@@ -19,7 +19,7 @@ However lets describe them anyway:
 
 What html templates, javascript etc, am i using for the frondend etc?
 
-Well:
+Well: umbrella js, recapcha, google analitics, jinja2
 
 
 # 3 How to run it
